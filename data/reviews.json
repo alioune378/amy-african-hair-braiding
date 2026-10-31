@@ -1,0 +1,8 @@
+{
+  "_help": [
+    "Real Google reviews only, copied word for word (use [...] to shorten without changing the meaning).",
+    "Candidates from the screenshots: Keona Henderson, Robin Jones, Tangie B, Ashley Burns, E. Trustee. Add each one with its exact text, star rating and date.",
+    "Example: {\"author\": \"Keona Henderson\", \"rating\": 5, \"date\": \"2025\", \"text\": \"...exact words...\", \"source\": \"Google\", \"home\": true}"
+  ],
+  "reviews": []
+}

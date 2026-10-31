@@ -1,0 +1,10 @@
+{
+  "_help": [
+    "Real photos of Amy's work only, with permission from any client whose face is shown.",
+    "Put files in src/images/gallery/ (WebP or JPG, about 1200px on the long side). style must match a service name for the filter.",
+    "Example photo: {\"src\": \"images/gallery/knotless-waist-length.webp\", \"alt\": \"Waist-length knotless braids, back view\", \"style\": \"Knotless Braids\", \"width\": 900, \"height\": 1200}",
+    "Before/after pairs show a comparison slider; only add genuine pairs of the same client: {\"before\": \"images/gallery/x-before.webp\", \"after\": \"images/gallery/x-after.webp\", \"alt\": \"...\", \"style\": \"Box Braids\"}"
+  ],
+  "photos": [],
+  "before_after": []
+}

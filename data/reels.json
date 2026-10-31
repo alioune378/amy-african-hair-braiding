@@ -1,0 +1,83 @@
+{
+  "_help": [
+    "Featured videos. Add one entry per real Reel from Amy's Instagram.",
+    "To get a link: open the Reel in Instagram > tap ••• (or the paper plane) > Copy link. It looks like https://www.instagram.com/reel/ABC123xyz/",
+    "home: true shows it in the homepage section (best with 3 or 4). Every reel appears on the Gallery & Videos page (6–9 recommended).",
+    "Later, to use an original video file instead of the Instagram embed: put the file in src/videos/ and the cover image in src/images/video-posters/, then fill mp4 and poster. The layout stays the same.",
+    "Example entry: {\"title\": \"Knotless braids, waist length\", \"instagram_url\": \"https://www.instagram.com/reel/ABC123xyz/\", \"style\": \"Knotless Braids\", \"home\": true, \"poster\": \"\", \"mp4\": \"\"}"
+  ],
+  "reels": [
+    {
+      "title": "Fresh from the chair",
+      "instagram_url": "https://www.instagram.com/reel/De4iLbzvnlG/",
+      "style": "",
+      "home": true,
+      "poster": "",
+      "mp4": ""
+    },
+    {
+      "title": "Styles you’ll love",
+      "instagram_url": "https://www.instagram.com/reel/DeqSDnxgNzr/",
+      "style": "",
+      "home": true,
+      "poster": "",
+      "mp4": ""
+    },
+    {
+      "title": "Braided by Amy",
+      "instagram_url": "https://www.instagram.com/reel/DefIoU1sg08/",
+      "style": "",
+      "home": true,
+      "poster": "",
+      "mp4": ""
+    },
+    {
+      "title": "Braiding in motion",
+      "instagram_url": "https://www.instagram.com/reel/DeStt15AYxo/",
+      "style": "",
+      "home": true,
+      "poster": "",
+      "mp4": ""
+    },
+    {
+      "title": "Clean parts, neat finish",
+      "instagram_url": "https://www.instagram.com/reel/Dd5Tu01gQ5d/",
+      "style": "",
+      "home": false,
+      "poster": "",
+      "mp4": ""
+    },
+    {
+      "title": "A new look",
+      "instagram_url": "https://www.instagram.com/reel/DdUBlsxNAN6/",
+      "style": "",
+      "home": false,
+      "poster": "",
+      "mp4": ""
+    },
+    {
+      "title": "Braids for every day",
+      "instagram_url": "https://www.instagram.com/reel/Dc6HfcsPlD1/",
+      "style": "",
+      "home": false,
+      "poster": "",
+      "mp4": ""
+    },
+    {
+      "title": "Made with care",
+      "instagram_url": "https://www.instagram.com/reel/Dc2SSyVgmJ-/",
+      "style": "",
+      "home": false,
+      "poster": "",
+      "mp4": ""
+    },
+    {
+      "title": "More from the salon",
+      "instagram_url": "https://www.instagram.com/reel/DcIPUkngB8m/",
+      "style": "",
+      "home": false,
+      "poster": "",
+      "mp4": ""
+    }
+  ]
+}
