@@ -221,7 +221,11 @@ def service_img(s):
     if is_ill(src):
         return (f'<img src="{e(src)}" alt="Illustration of {e(s["name"].lower())}" width="400" height="300" loading="lazy" decoding="async">'
                 '<span class="ill-tag">Illustration</span>')
-    return f'<img src="{e(src)}" alt="{e(s["name"])} by Amy African Hair Braiding" loading="lazy" decoding="async">'
+    style = f' style="object-position:{e(s["image_position"])}"' if s.get("image_position") else ""
+    if s.get("image_label"):
+        return (f'<img src="{e(src)}" alt="Example of {e(s["name"].lower())}"{style} loading="lazy" decoding="async">'
+                f'<span class="ill-tag">{e(s["image_label"])}</span>')
+    return f'<img src="{e(src)}" alt="{e(s["name"])} by Amy African Hair Braiding"{style} loading="lazy" decoding="async">'
 
 
 def style_previews(items):
@@ -361,7 +365,7 @@ def page_home():
         gal = '<div class="masonry">' + "".join(photo_item(p, i) for i, p in enumerate(photos)) + "</div>"
     else:
         gal = (style_previews(OFFERED[:4])
-               + '<p class="ill-note reveal">Illustrations of the styles we offer. Photos of Amy’s own work are coming soon.</p>'
+               + '<p class="ill-note reveal">Example photos of the styles we offer. Photos of Amy’s own work are coming soon.</p>'
                + f'<p class="center-row reveal">{follow_btn("See our latest styles on Instagram")}</p>')
     reviews_block = ("".join(review_card(r) for r in home_reviews)) if home_reviews else ""
     return head("index.html", "Amy African Hair Braiding And Boutique | Braids in St. Ann & St. Louis, MO",
@@ -509,7 +513,7 @@ def page_gallery():
         grid = f'{filt}<div class="masonry" data-filter-target="gal">' + "".join(photo_item(p, i) for i, p in enumerate(photos)) + "</div>"
     else:
         grid = (style_previews(OFFERED)
-                + '<p class="ill-note reveal">Illustrations of the styles we offer. Our photo gallery of Amy’s own work is being prepared; see her latest styles on Instagram and TikTok.</p>'
+                + '<p class="ill-note reveal">Example photos of the styles we offer. Our photo gallery of Amy’s own work is being prepared; see her latest styles on Instagram and TikTok.</p>'
                 + f'<div class="center-row reveal">{follow_btn()}</div>')
     ba = GALLERY.get("before_after", [])
     ba_html = ""

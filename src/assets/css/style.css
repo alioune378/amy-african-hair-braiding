@@ -460,3 +460,4 @@ address { font-style: normal; }
 .topbar-call { white-space: nowrap; }
 @media (max-width: 700px) { .topbar a.topbar-addr { display: none; } .topbar { font-size: 1rem; } }
 .style-tile .ill-tag { top: 12px; bottom: auto; }
+.svc-media .ill-tag { top: 12px; bottom: auto; }
