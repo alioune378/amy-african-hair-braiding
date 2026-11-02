@@ -29,6 +29,8 @@ A = S["address"]
 ADDR_LINE = f'{A["street"]}, {A["city"]}, {A["region"]} {A["postal"]}'
 TEL = "tel:" + S["phone_e164"]
 IG = S["instagram_url"]
+TT = S.get("tiktok_url") or ""
+TT_HANDLE = S.get("tiktok_handle") or ""
 MAPS = S["google_maps_url"]
 
 # ---------------------------------------------------------------- icons
@@ -36,6 +38,7 @@ ICONS = {
     "phone": '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/>',
     "calendar": '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
     "instagram": '<rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6" fill="currentColor"/>',
+    "tiktok": '<path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 3c.4 2.6 2.2 4.4 5 4.6"/>',
     "map": '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/>',
     "play": '<path d="M7 4.5v15l13-7.5z" fill="currentColor" stroke="none"/>',
     "arrow": '<path d="M5 12h14M13 6l6 6-6 6"/>',
@@ -69,7 +72,7 @@ def json_ld():
         "address": {"@type": "PostalAddress", "streetAddress": A["street"], "addressLocality": A["city"],
                     "addressRegion": A["region"], "postalCode": A["postal"], "addressCountry": A["country"]},
         "areaServed": ["St. Ann, MO", "St. Louis, MO"],
-        "sameAs": [IG],
+        "sameAs": [u for u in (IG, TT) if u],
         "hasMap": MAPS,
     }
     if S.get("established"):
@@ -159,7 +162,7 @@ def foot():
     <div>
       <h2 class="foot-h">Explore</h2>
       <ul class="foot-links">{"".join(f'<li><a href="{h}">{e(t)}</a></li>' for h, t in NAV)}
-      <li><a href="{e(IG)}" target="_blank" rel="noopener">Instagram</a></li></ul>
+      <li><a href="{e(IG)}" target="_blank" rel="noopener">Instagram</a></li>{f'<li><a href="{e(TT)}" target="_blank" rel="noopener">TikTok</a></li>' if TT else ""}</ul>
     </div>
   </div>
   <div class="wrap foot-base">
@@ -287,6 +290,8 @@ def reels_section(home):
     empty = "" if items else (
         f'<p class="reels-empty reveal">Our newest braiding videos are on Instagram, <a href="{e(IG)}" target="_blank" rel="noopener">@{e(S["instagram_handle"])}</a>.</p>')
     more = f'<a class="btn btn-gold" href="{e(IG)}" target="_blank" rel="noopener">See more on Instagram {ic("arrow")}</a>' if home else follow_btn()
+    if TT:
+        more += f'<a class="btn btn-tt" href="{e(TT)}" target="_blank" rel="noopener">{ic("tiktok")}<span>Follow us on TikTok</span></a>'
     return f'''<section class="band band-dark reels-band" id="videos">
   <div class="wrap">
     {head_}
@@ -614,6 +619,7 @@ def page_contact():
       <li><a class="contact-tile" href="{TEL}">{ic("phone")}<span><strong>Call</strong>{e(S["phone"])}</span></a></li>
       <li><a class="contact-tile" href="#book">{ic("calendar")}<span><strong>Request</strong>Booking form</span></a></li>
       <li><a class="contact-tile" href="{e(IG)}" target="_blank" rel="noopener">{ic("instagram")}<span><strong>Instagram</strong>@{e(S["instagram_handle"])}</span></a></li>
+      {f'<li><a class="contact-tile" href="{e(TT)}" target="_blank" rel="noopener">{ic("tiktok")}<span><strong>TikTok</strong>@{e(TT_HANDLE)}</span></a></li>' if TT else ""}
       {wa}
     </ul>
   </div>

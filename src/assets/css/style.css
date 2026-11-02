@@ -81,6 +81,8 @@ address { font-style: normal; }
 .btn-line { --fg: var(--burgundy); --bd: rgba(87, 7, 44, .35); }
 .btn-line:hover { --bd: var(--pink-btn); --fg: var(--pink-btn); }
 .btn-ig { --fg: #fff; background: linear-gradient(120deg, #7a1a8a, var(--pink-btn) 55%, #e8a33a); }
+.btn-tt { --fg: #fff; background: #111; border: 1px solid rgba(255, 255, 255, .28); }
+.btn-tt:hover { border-color: var(--gold); }
 .btn .ic { width: 1.1em; height: 1.1em; }
 .btn-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
 
