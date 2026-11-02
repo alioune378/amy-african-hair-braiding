@@ -176,10 +176,11 @@ def foot():
     <p>© {year} {e(S["name"])} · {e(ADDR_LINE)}</p>
   </div>
 </footer>
-<nav class="mobile-bar" aria-label="Quick actions">
+<nav class="mobile-bar{" has-tt" if TT else ""}" aria-label="Quick actions">
   <a href="{TEL}">{ic("phone")}<span>Call</span></a>
   <a href="contact.html#book" class="mb-book">{ic("calendar")}<span>Book</span></a>
   <a href="{e(IG)}" target="_blank" rel="noopener">{ic("instagram")}<span>Instagram</span></a>
+  {f'<a href="{e(TT)}" target="_blank" rel="noopener">{ic("tiktok")}<span>TikTok</span></a>' if TT else ""}
 </nav>
 <script src="assets/js/site.js" defer></script>
 </body>
