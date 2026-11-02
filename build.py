@@ -121,7 +121,13 @@ def head(page, title, desc):
 def header(page):
     links = "".join(
         f'<li><a href="{h}"{" aria-current=\"page\"" if h == page else ""}>{e(t)}</a></li>' for h, t in NAV)
-    return f'''<header class="site-head" data-head>
+    return f'''<div class="topbar">
+  <div class="wrap topbar-row">
+    <a class="topbar-call" href="{TEL}">{ic("phone")}<span>Call us: <strong>{e(S["phone"])}</strong></span></a>
+    <a class="topbar-addr hide-sm" href="{e(MAPS)}" target="_blank" rel="noopener">{ic("map")}<span>{e(ADDR_LINE)}</span></a>
+  </div>
+</div>
+<header class="site-head" data-head>
   <div class="wrap head-row">
     <a class="brand" href="index.html" aria-label="{e(S["name"])}, home">
       <img src="images/logo/amy-logo-dark-480.webp" width="480" height="320" alt="{e(S["name"])} logo">
@@ -206,8 +212,26 @@ BRAID_ART = '''<svg class="braid-art" viewBox="0 0 120 200" aria-hidden="true" f
 <rect x="49" y="96" width="22" height="14" rx="3" fill="url(#g{n})"/></svg>'''
 
 
+def is_ill(src):
+    return str(src or "").lower().endswith(".svg")
+
+
+def service_img(s):
+    src = s.get("image")
+    if is_ill(src):
+        return (f'<img src="{e(src)}" alt="Illustration of {e(s["name"].lower())}" width="400" height="300" loading="lazy" decoding="async">'
+                '<span class="ill-tag">Illustration</span>')
+    return f'<img src="{e(src)}" alt="{e(s["name"])} by Amy African Hair Braiding" loading="lazy" decoding="async">'
+
+
+def style_previews(items):
+    tiles = "".join(f'<figure class="style-tile reveal">{service_img(s)}<figcaption>{e(s["name"])}</figcaption></figure>'
+                    for s in items if s.get("image"))
+    return f'<div class="style-tiles">{tiles}</div>' if tiles else ""
+
+
 def service_card(s, n, book=True, detail=False):
-    img = (f'<img src="{e(s["image"])}" alt="{e(s["name"])} by Amy African Hair Braiding" loading="lazy" decoding="async">'
+    img = (service_img(s)
            if s.get("image") else f'<div class="svc-art">{BRAID_ART.format(n=n)}<span class="svc-mono">{e(s["name"][0])}</span></div>')
     meta = []
     if s.get("duration"):
@@ -336,7 +360,8 @@ def page_home():
     if photos:
         gal = '<div class="masonry">' + "".join(photo_item(p, i) for i, p in enumerate(photos)) + "</div>"
     else:
-        gal = (placeholder("Hairstyle photos", "Add real photos of Amy’s work to data/gallery.json")
+        gal = (style_previews(OFFERED[:4])
+               + '<p class="ill-note reveal">Illustrations of the styles we offer. Photos of Amy’s own work are coming soon.</p>'
                + f'<p class="center-row reveal">{follow_btn("See our latest styles on Instagram")}</p>')
     reviews_block = ("".join(review_card(r) for r in home_reviews)) if home_reviews else ""
     return head("index.html", "Amy African Hair Braiding And Boutique | Braids in St. Ann & St. Louis, MO",
@@ -352,7 +377,7 @@ def page_home():
         <a class="btn btn-pink" href="contact.html#book">{ic("calendar")}<span>Book Your Appointment</span></a>
         <a class="btn btn-ghost" href="services.html">Explore Our Styles {ic("arrow")}</a>
       </div>
-      <a class="hero-call" href="{TEL}">{ic("phone")}<span>Call <strong>{e(S["phone"])}</strong></span></a>
+      <a class="hero-call" href="{TEL}">{ic("phone")}<span>Call now <strong>{e(S["phone"])}</strong></span></a>
     </div>
     <div class="hero-art">
       <div class="hero-logo">
@@ -385,7 +410,7 @@ def page_home():
 
 <section class="band band-light" id="transformations">
   <div class="wrap">
-    {sec_head("Featured work", "Every Braid Tells <em>a Beautiful Story.</em>", "Real styles from Amy’s chair.", center=True)}
+    {sec_head("Featured work", "Every Braid Tells <em>a Beautiful Story.</em>", "Real styles from Amy’s chair." if photos else "A look at the styles we braid.", center=True)}
     {gal}
     {'<div class="center-row reveal"><a class="btn btn-dark" href="gallery.html">View all hairstyles ' + ic("arrow") + '</a></div>' if photos else ""}
   </div>
@@ -483,8 +508,9 @@ def page_gallery():
     if photos:
         grid = f'{filt}<div class="masonry" data-filter-target="gal">' + "".join(photo_item(p, i) for i, p in enumerate(photos)) + "</div>"
     else:
-        grid = (placeholder("Photo gallery", "Add real photos of Amy’s work to src/images/gallery/ and list them in data/gallery.json")
-                + f'<div class="empty reveal"><p>Our photo gallery is being prepared. In the meantime, see our latest styles on Instagram.</p>{follow_btn()}</div>')
+        grid = (style_previews(OFFERED)
+                + '<p class="ill-note reveal">Illustrations of the styles we offer. Our photo gallery of Amy’s own work is being prepared; see her latest styles on Instagram and TikTok.</p>'
+                + f'<div class="center-row reveal">{follow_btn()}</div>')
     ba = GALLERY.get("before_after", [])
     ba_html = ""
     if ba:

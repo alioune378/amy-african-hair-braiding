@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Illustration of hair extensions"><title>Illustration of hair extensions</title><defs>
+<radialGradient id="g3" cx="50%" cy="38%" r="70%"><stop offset="0" stop-color="#4a1038"/><stop offset=".55" stop-color="#2a0a22"/><stop offset="1" stop-color="#100810"/></radialGradient>
+<linearGradient id="t3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d1086f"/><stop offset="1" stop-color="#7a0844"/></linearGradient>
+<linearGradient id="gold3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e08f"/><stop offset=".5" stop-color="#d4af37"/><stop offset="1" stop-color="#a77f1e"/></linearGradient>
+</defs>
+<rect width="400" height="300" fill="url(#g3)"/>
+<circle cx="200" cy="120" r="92" fill="none" stroke="url(#gold3)" stroke-opacity=".35" stroke-width="1.5"/>
+<circle cx="200" cy="120" r="104" fill="none" stroke="url(#gold3)" stroke-opacity=".15" stroke-width="1"/><ellipse cx="200" cy="122" rx="50" ry="58" fill="#1b0e12"/><path d="M160 120 C138 170 132 230 120 300 L170 300 C166 250 170 190 176 150 Z" fill="#1b0e12"/>
+<path d="M240 120 C262 170 268 230 280 300 L230 300 C234 250 230 190 224 150 Z" fill="#1b0e12"/>
+<path d="M150 170 C142 210 138 250 132 296 M250 170 C258 210 262 250 268 296 M160 200 C156 240 154 270 152 298 M240 200 C244 240 246 270 248 298" stroke="rgba(243,215,122,.28)" stroke-width="1.2" fill="none"/><path d="M96 300 C104 248 150 222 184 214 L184 182 C192 188 208 188 216 182 L216 214 C250 222 296 248 304 300 Z" fill="url(#t3)"/>
+<path d="M184 182 C192 190 208 190 216 182 L216 206 C206 212 194 212 184 206 Z" fill="#6a3e2a"/>
+<ellipse cx="200" cy="132" rx="37" ry="47" fill="#7b4a33"/>
+<path d="M186 150 q14 7 28 0" stroke="#4a2418" stroke-width="2" fill="none" stroke-linecap="round" opacity=".55"/>
+<path d="M181 126 q6 -3 12 0 M207 126 q6 -3 12 0" stroke="#2a130c" stroke-width="2" fill="none" stroke-linecap="round" opacity=".6"/><path d="M162 134 C156 94 176 74 200 74 C224 74 244 94 238 134 C232 110 220 100 200 100 C180 100 168 110 162 134 Z" fill="#1b0e12"/><path d="M164 112 C172 90 228 90 236 112" stroke="#3a2026" stroke-width="2" fill="none" opacity=".7"/><circle cx="163" cy="150" r="7" fill="none" stroke="url(#gold3)" stroke-width="2.2"/><circle cx="237" cy="150" r="7" fill="none" stroke="url(#gold3)" stroke-width="2.2"/></svg>
