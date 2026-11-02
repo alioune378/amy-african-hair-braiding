@@ -77,37 +77,21 @@
   /* ---------- TikTok videos: official player when the video id is known or can be looked up; else a link */
   var tts = $$('.reel[data-kind="tiktok"]');
   if (tts.length) {
-    var ttState = "idle", ttWait = [];
-    var loadTT = function (cb) {
-      if (ttState === "ready") return cb(true);
-      if (ttState === "failed") return cb(false);
-      ttWait.push(cb);
-      if (ttState === "loading") return;
-      ttState = "loading";
-      var s = document.createElement("script");
-      s.async = true; s.src = "https://www.tiktok.com/embed.js";
-      s.onload = function () { ttState = "ready"; ttWait.splice(0).forEach(function (f) { f(true); }); };
-      s.onerror = function () { ttState = "failed"; ttWait.splice(0).forEach(function (f) { f(false); }); };
-      document.body.appendChild(s);
-    };
     var ttRender = function (reel, vid) {
       var box = $("[data-embed]", reel), status = $("[data-status]", reel);
-      var handle = reel.getAttribute("data-handle") || "";
-      var cite = "https://www.tiktok.com/@" + handle + "/video/" + vid;
-      box.innerHTML = '<blockquote class="tiktok-embed" cite="' + cite + '" data-video-id="' + vid + '"><section></section></blockquote>';
-      var fail = function () { reel.setAttribute("data-state", "fallback"); box.innerHTML = ""; if (status) status.textContent = "Watch on TikTok"; };
-      loadTT(function (ok) {
-        if (!ok) return fail();
-        if (window.tiktokEmbed && window.tiktokEmbed.lib && window.tiktokEmbed.lib.render) {
-          try { window.tiktokEmbed.lib.render(box.querySelectorAll(".tiktok-embed")); } catch (err) {}
-        }
-        var tries = 0;
-        var check = setInterval(function () {
-          tries++;
-          if (box.querySelector("iframe")) { clearInterval(check); reel.classList.add("is-embedded"); reel.setAttribute("data-state", "embedded"); }
-          else if (tries > 24) { clearInterval(check); fail(); }
-        }, 500);
-      });
+      var f = document.createElement("iframe");
+      f.src = "https://www.tiktok.com/player/v1/" + vid + "?music_info=0&description=0&rel=0&autoplay=0&loop=0";
+      f.title = "TikTok video from Amy African Hair Braiding";
+      f.setAttribute("allow", "fullscreen; encrypted-media; picture-in-picture");
+      f.setAttribute("allowfullscreen", "");
+      f.setAttribute("loading", "lazy");
+      f.style.cssText = "position:absolute;inset:0;width:100%;height:100%;border:0";
+      var done = false;
+      f.addEventListener("load", function () { done = true; reel.classList.add("is-embedded"); reel.setAttribute("data-state", "embedded"); }, { once: true });
+      box.innerHTML = ""; box.appendChild(f);
+      setTimeout(function () {
+        if (!done) { reel.setAttribute("data-state", "fallback"); box.innerHTML = ""; if (status) status.textContent = "Watch on TikTok"; }
+      }, 15000);
     };
     var ttEmbed = function (reel) {
       if (reel.getAttribute("data-state")) return;
