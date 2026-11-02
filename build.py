@@ -19,6 +19,7 @@ def load(name):
 S = load("site.json")
 SERVICES = load("services.json")
 REELS = [r for r in load("reels.json")["reels"] if r.get("instagram_url") or r.get("mp4")]
+TIKS = [t for t in load("tiktoks.json").get("videos", []) if t.get("url")]
 GALLERY = load("gallery.json")
 REVIEWS = [r for r in load("reviews.json")["reviews"] if r.get("text") and r.get("author")]
 SITE_URL = (os.environ.get("SITE_URL") or S.get("site_url") or "").rstrip("/")
@@ -287,6 +288,32 @@ def reel_card(r, i):
 </article>'''
 
 
+def tiktok_card(t):
+    title = t.get("title") or "Amy on TikTok"
+    url = t["url"]
+    return f'''<article class="reel reveal" data-kind="tiktok" data-url="{e(url)}" data-vid="{e(t.get("video_id", ""))}" data-handle="{e(TT_HANDLE)}">
+  <div class="reel-frame">
+    <a class="reel-facade reel-facade-tt" href="{e(url)}" target="_blank" rel="noopener" aria-label="Watch “{e(title)}” on TikTok">
+      <span class="reel-glow"></span>
+      <span class="reel-play">{ic("play")}</span>
+      <span class="reel-status" data-status>Watch on TikTok</span>
+    </a>
+    <div class="reel-embed reel-embed-tt" data-embed></div>
+  </div>
+  <div class="reel-cap"><h3>{e(title)}</h3><a href="{e(url)}" target="_blank" rel="noopener">Open on TikTok {ic("external")}</a></div>
+</article>'''
+
+
+def tiktok_block(home):
+    if not TIKS:
+        return ""
+    items = [t for t in TIKS if t.get("home")][:3] if home else TIKS
+    items = items or TIKS[:3]
+    cls = "reels reels-home" if home else "reels reels-page"
+    return (f'<div class="tt-head reveal"><p class="eyebrow">{ic("tiktok")}<span>On TikTok</span></p></div>'
+            f'<div class="{cls}">{"".join(tiktok_card(t) for t in items)}</div>')
+
+
 def reel_slots(n):
     if not DRAFT:
         return ""
@@ -325,6 +352,7 @@ def reels_section(home):
     {head_}
     {f'<div class="{cls}">{grid}</div>' if grid else ""}
     {empty}
+    {tiktok_block(home)}
     <div class="center-row reveal">{more}</div>
   </div>
 </section>'''

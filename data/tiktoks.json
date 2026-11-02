@@ -1,0 +1,14 @@
+{
+  "_help": [
+    "Amy's TikTok videos, shown in the Videos section next to Instagram.",
+    "url: the share link (short tiktok.com/t/... links work). video_id: optional, the number in the full link tiktok.com/@amy.10007.st.charl/video/<NUMBER>. With a video_id the TikTok player loads directly; without it, the site asks TikTok for it in the visitor's browser and falls back to a 'Watch on TikTok' link.",
+    "home: true shows the video on the home page (up to 3)."
+  ],
+  "videos": [
+    {"url": "https://www.tiktok.com/t/ZTfwPVoxU/", "video_id": "", "title": "Fresh braids on TikTok", "home": true},
+    {"url": "https://www.tiktok.com/t/ZPLaJRGQP/", "video_id": "", "title": "From the chair", "home": true},
+    {"url": "https://www.tiktok.com/t/ZTfwPqsP2/", "video_id": "", "title": "Braiding by Amy", "home": true},
+    {"url": "https://www.tiktok.com/t/ZTfwPHTDM/", "video_id": "", "title": "New look, same care", "home": false},
+    {"url": "https://www.tiktok.com/t/ZPLaJqn3B/", "video_id": "", "title": "Styles you’ll love", "home": false}
+  ]
+}

@@ -74,6 +74,69 @@
     $$("video").forEach(function (v) { if (v !== ev.target && !v.paused) v.pause(); });
   }, true);
 
+  /* ---------- TikTok videos: official player when the video id is known or can be looked up; else a link */
+  var tts = $$('.reel[data-kind="tiktok"]');
+  if (tts.length) {
+    var ttState = "idle", ttWait = [];
+    var loadTT = function (cb) {
+      if (ttState === "ready") return cb(true);
+      if (ttState === "failed") return cb(false);
+      ttWait.push(cb);
+      if (ttState === "loading") return;
+      ttState = "loading";
+      var s = document.createElement("script");
+      s.async = true; s.src = "https://www.tiktok.com/embed.js";
+      s.onload = function () { ttState = "ready"; ttWait.splice(0).forEach(function (f) { f(true); }); };
+      s.onerror = function () { ttState = "failed"; ttWait.splice(0).forEach(function (f) { f(false); }); };
+      document.body.appendChild(s);
+    };
+    var ttRender = function (reel, vid) {
+      var box = $("[data-embed]", reel), status = $("[data-status]", reel);
+      var handle = reel.getAttribute("data-handle") || "";
+      var cite = "https://www.tiktok.com/@" + handle + "/video/" + vid;
+      box.innerHTML = '<blockquote class="tiktok-embed" cite="' + cite + '" data-video-id="' + vid + '"><section></section></blockquote>';
+      var fail = function () { reel.setAttribute("data-state", "fallback"); box.innerHTML = ""; if (status) status.textContent = "Watch on TikTok"; };
+      loadTT(function (ok) {
+        if (!ok) return fail();
+        if (window.tiktokEmbed && window.tiktokEmbed.lib && window.tiktokEmbed.lib.render) {
+          try { window.tiktokEmbed.lib.render(box.querySelectorAll(".tiktok-embed")); } catch (err) {}
+        }
+        var tries = 0;
+        var check = setInterval(function () {
+          tries++;
+          if (box.querySelector("iframe")) { clearInterval(check); reel.classList.add("is-embedded"); reel.setAttribute("data-state", "embedded"); }
+          else if (tries > 24) { clearInterval(check); fail(); }
+        }, 500);
+      });
+    };
+    var ttEmbed = function (reel) {
+      if (reel.getAttribute("data-state")) return;
+      reel.setAttribute("data-state", "loading");
+      var status = $("[data-status]", reel);
+      if (status) status.textContent = "Loading video…";
+      var vid = reel.getAttribute("data-vid");
+      if (vid) return ttRender(reel, vid);
+      var url = reel.getAttribute("data-url");
+      if (!window.fetch) { reel.setAttribute("data-state", "fallback"); if (status) status.textContent = "Watch on TikTok"; return; }
+      fetch("https://www.tiktok.com/oembed?url=" + encodeURIComponent(url))
+        .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+        .then(function (d) {
+          var m = /data-video-id="(\d+)"/.exec(d.html || "") || /video\/(\d+)/.exec(d.html || "");
+          var id = (m && m[1]) || d.embed_product_id;
+          if (!id) throw 0;
+          if (d.author_unique_id) reel.setAttribute("data-handle", d.author_unique_id);
+          ttRender(reel, id);
+        })
+        .catch(function () { reel.setAttribute("data-state", "fallback"); if (status) status.textContent = "Watch on TikTok"; });
+    };
+    if ("IntersectionObserver" in window) {
+      var tio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { if (en.isIntersecting) { ttEmbed(en.target); tio.unobserve(en.target); } });
+      }, { rootMargin: "300px 0px" });
+      tts.forEach(function (r) { tio.observe(r); });
+    } else { tts.forEach(ttEmbed); }
+  }
+
   /* ---------- Instagram reels: official embeds, lazy-loaded, with a link fallback */
   var reels = $$('.reel[data-kind="instagram"]');
   if (reels.length) {

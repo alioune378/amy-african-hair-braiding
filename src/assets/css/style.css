@@ -461,3 +461,10 @@ address { font-style: normal; }
 @media (max-width: 700px) { .topbar a.topbar-addr { display: none; } .topbar { font-size: 1rem; } }
 .style-tile .ill-tag { top: 12px; bottom: auto; }
 .svc-media .ill-tag { top: 12px; bottom: auto; }
+
+/* ---------- TikTok videos */
+.tt-head { display: flex; justify-content: center; margin: 48px 0 20px; }
+.tt-head .eyebrow { color: var(--gold-hi); }
+.reel-embed-tt { background: #000; overflow: hidden; }
+.reel-embed-tt blockquote.tiktok-embed { margin: 0 !important; min-width: 0 !important; max-width: 100% !important; }
+.reel-embed-tt iframe { width: 100% !important; height: 100% !important; }
