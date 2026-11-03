@@ -4,7 +4,7 @@
 No dependencies: `python3 build.py` reads data/*.json and src/, writes dist/.
 Set SITE_URL (env var or data/site.json "site_url") to add canonical URLs and the sitemap.
 """
-import html, json, os, shutil, urllib.parse
+import html, json, os, re, shutil, urllib.parse, urllib.request
 from datetime import date
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -289,13 +289,45 @@ def reel_card(r, i):
 </article>'''
 
 
+def resolve_tiktoks():
+    """At build time (on Netlify, which can reach TikTok), look up each video's id and cover image
+    through TikTok's public oEmbed endpoint, so every card gets a thumbnail and the player loads
+    without relying on the visitor's browser. Any failure leaves that card as before."""
+    if os.environ.get("SKIP_TIKTOK_LOOKUP"):
+        return
+    os.makedirs(os.path.join(DIST, "images", "tiktok"), exist_ok=True)
+    for i, t in enumerate(TIKS):
+        try:
+            if not t.get("video_id") or not t.get("thumb"):
+                q = "https://www.tiktok.com/oembed?url=" + urllib.parse.quote(t["url"], safe="")
+                req = urllib.request.Request(q, headers={"User-Agent": "Mozilla/5.0 (site build)"})
+                with urllib.request.urlopen(req, timeout=12) as res:
+                    d = json.loads(res.read().decode("utf-8"))
+                m = re.search(r'data-video-id="(\d+)"', d.get("html", "")) or re.search(r"video/(\d+)", d.get("html", ""))
+                vid = (m and m.group(1)) or str(d.get("embed_product_id") or "")
+                if vid and not t.get("video_id"):
+                    t["video_id"] = vid
+                thumb = d.get("thumbnail_url")
+                if thumb and not t.get("thumb"):
+                    name = f"images/tiktok/tt-{i + 1}.jpg"
+                    req = urllib.request.Request(thumb, headers={"User-Agent": "Mozilla/5.0 (site build)"})
+                    with urllib.request.urlopen(req, timeout=12) as res, open(os.path.join(DIST, name), "wb") as f:
+                        f.write(res.read())
+                    t["thumb"] = name
+            print(f"TikTok {i + 1}: id={t.get('video_id') or '-'} thumb={'yes' if t.get('thumb') else 'no'}")
+        except Exception as err:  # network or format problem: keep the link fallback
+            print(f"TikTok {i + 1}: lookup failed ({err.__class__.__name__}); link fallback kept")
+
+
 def tiktok_card(t):
     title = t.get("title") or "Amy on TikTok"
     url = t["url"]
+    thumb = t.get("thumb") or ""
+    poster = f'<img src="{e(thumb)}" alt="" loading="lazy" decoding="async">' if thumb else ""
     return f'''<article class="reel reveal" data-kind="tiktok" data-url="{e(url)}" data-vid="{e(t.get("video_id", ""))}" data-handle="{e(TT_HANDLE)}">
   <div class="reel-frame">
     <a class="reel-facade reel-facade-tt" href="{e(url)}" target="_blank" rel="noopener" aria-label="Watch “{e(title)}” on TikTok">
-      <span class="reel-glow"></span>
+      <span class="reel-glow"></span>{poster}
       <span class="reel-play">{ic("play")}</span>
       <span class="reel-status" data-status>Watch on TikTok</span>
     </a>
@@ -766,6 +798,7 @@ def main():
     if os.path.isdir(DIST):
         shutil.rmtree(DIST)
     shutil.copytree(os.path.join(ROOT, "src"), DIST)
+    resolve_tiktoks()
     pages = {"index.html": page_home, "services.html": page_services, "gallery.html": page_gallery,
              "about.html": page_about, "reviews.html": page_reviews, "contact.html": page_contact,
              "booking-received.html": page_received, "404.html": page_404}

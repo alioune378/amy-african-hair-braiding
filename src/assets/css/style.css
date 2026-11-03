@@ -467,3 +467,8 @@ address { font-style: normal; }
 .tt-head .eyebrow { color: var(--gold-hi); }
 .reel-embed-tt { background: #000; overflow: hidden; }
 .mobile-bar.has-tt { grid-template-columns: 1fr 1.25fr 1fr 1fr; }
+
+/* TikTok cover images (fetched at build time) under the play button */
+.reel-facade-tt img { z-index: 0; }
+.reel-facade-tt img + .reel-play, .reel-facade-tt .reel-play { z-index: 1; }
+.reel-facade-tt .reel-status { z-index: 1; text-shadow: 0 1px 8px rgba(0, 0, 0, .8); }
