@@ -4,7 +4,7 @@
   "short_name": "Amy African Hair Braiding",
   "established": "2010",
   "_established_note": "From the salon sign (EST 2010). Leave empty to hide.",
-  "site_url": "",
+  "site_url": "https://amy-african-hair-braiding.netlify.app",
   "draft_placeholders": false,
   "address": {
     "street": "10007 St Charles Rock Rd",
@@ -104,5 +104,7 @@
     "position": "50% 22%",
     "alt": "Long black box braids by Amy, side view",
     "_note": "Amy's own work (photo 02)."
-  }
+  },
+  "share_image": "images/og-amy-work.jpg",
+  "_share_image_note": "Link-preview picture (1200x630) for iMessage, WhatsApp, Facebook, etc. Made from Amy's photos 02, 05 and 09."
 }

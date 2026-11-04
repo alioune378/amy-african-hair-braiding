@@ -42,6 +42,7 @@ TT = S.get("tiktok_url") or ""
 TT_HANDLE = S.get("tiktok_handle") or ""
 MAPS = S["google_maps_url"]
 EST = S.get("established") or ""
+OG_IMAGE = S.get("share_image") or "images/logo/og-image.jpg"
 HERO = S.get("hero") or {}
 ABOUT = S.get("about") or {}
 BOUTIQUE = S.get("boutique") or {}
@@ -93,7 +94,7 @@ def json_ld():
         ld["foundingDate"] = EST
     if SITE_URL:
         ld["url"] = SITE_URL + "/"
-        ld["image"] = SITE_URL + "/images/logo/og-image.jpg"
+        ld["image"] = SITE_URL + "/" + OG_IMAGE
     if OFFERED:
         ld["makesOffer"] = [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": s["name"]}} for s in OFFERED]
     return json.dumps(ld, ensure_ascii=False)
@@ -105,7 +106,9 @@ def head(page, title, desc, preload=""):
         path = "" if page == "index.html" else page
         canon = f'<link rel="canonical" href="{e(SITE_URL + "/" + path)}">'
         og_url = (f'<meta property="og:url" content="{e(SITE_URL + "/" + path)}">'
-                  f'<meta property="og:image" content="{e(SITE_URL)}/images/logo/og-image.jpg">')
+                  f'<meta property="og:image" content="{e(SITE_URL)}/{OG_IMAGE}"><meta property="og:image:width" content="1200">'
+                  f'<meta property="og:image:height" content="630"><meta property="og:image:alt" content="Braids by Amy: long box braids, blonde boho braids and feed-in braids">'
+                  f'<meta name="twitter:image" content="{e(SITE_URL)}/{OG_IMAGE}">')
     return f'''<!doctype html>
 <html lang="en">
 <head>
