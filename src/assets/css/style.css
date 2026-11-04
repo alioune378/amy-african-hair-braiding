@@ -160,6 +160,80 @@ body.menu-open { overflow: hidden; }
   .hero .btn-row .btn { flex: 0 0 auto; }
 }
 
+/* ============================================================ MEET AMY — owner introduction with her salon footage */
+.meet { position: relative; overflow: hidden; color: var(--on-dark); padding: clamp(64px, 10vw, 120px) 0;
+  background: linear-gradient(180deg, var(--black) 0%, var(--ink) 55%, var(--ink) 100%); border-top: 1px solid rgba(212, 175, 55, .16); }
+.meet::before { content: ""; position: absolute; top: 18%; left: -20%; width: 70vw; height: 70vw; max-width: 640px; max-height: 640px; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(209, 8, 111, .12), transparent); pointer-events: none; }
+.meet-grid { position: relative; display: grid; gap: 34px; grid-template-areas: "intro" "film" "body"; }
+.meet-intro { grid-area: intro; }
+.meet-film { grid-area: film; }
+.meet-body { grid-area: body; }
+
+.meet-eyebrow { color: var(--gold-hi); margin-bottom: 18px; }
+.meet-eyebrow::before { display: none; }
+.meet-rule { display: block; width: 56px; height: 1px; background: linear-gradient(90deg, var(--gold), var(--gold-hi)); transform-origin: left center; }
+.meet-title { font-size: clamp(3rem, 12vw, 5rem); line-height: .95; letter-spacing: -.015em; }
+.meet-title em { color: var(--pink-soft); }
+.meet-sub { margin: 16px 0 0; font: italic 500 clamp(1.3rem, 4.6vw, 1.6rem)/1.3 var(--display); color: var(--gold-hi); }
+.meet-nb { display: inline-block; }
+
+.meet-film { position: relative; margin: 0; justify-self: center; width: min(76vw, 320px); }
+/* offset hairline frame behind the footage */
+.meet-film::before { content: ""; position: absolute; top: 14px; left: 14px; right: -14px; bottom: 44px; border: 1px solid rgba(212, 175, 55, .42); border-radius: 22px; pointer-events: none; }
+.meet-frame { position: relative; aspect-ratio: 464 / 832; border-radius: 18px; overflow: hidden; background: var(--ink-2);
+  border: 1px solid rgba(236, 210, 131, .55); box-shadow: 0 34px 70px -34px rgba(0, 0, 0, .9), 0 0 0 6px rgba(18, 10, 16, .55); }
+.meet-poster, .meet-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.meet-video { opacity: 0; transition: opacity .6s ease; }
+.meet-frame[data-state="playing"] .meet-video, .meet-frame[data-state="paused"] .meet-video { opacity: 1; }
+.meet-frame[data-state="failed"] .meet-video { display: none; }
+.meet-toggle { position: absolute; right: 12px; bottom: 12px; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%;
+  background: rgba(18, 10, 16, .58); color: #fff; border: 1px solid rgba(236, 210, 131, .45); opacity: .78; transition: opacity .2s, background-color .2s; }
+.meet-toggle:hover, .meet-toggle:focus-visible { opacity: 1; background: rgba(18, 10, 16, .8); }
+.meet-toggle .ic { width: 18px; height: 18px; }
+.meet-toggle-play { display: none; }
+.meet-frame:not([data-state="playing"]) .meet-toggle-pause { display: none; }
+.meet-frame:not([data-state="playing"]) .meet-toggle-play { display: inline-flex; }
+.meet-frame:not([data-state="playing"]) .meet-toggle { opacity: 1; }
+.meet-cap { margin-top: 30px; text-align: center; font: 500 .7rem/1.3 var(--sans); letter-spacing: .24em; text-transform: uppercase; color: var(--on-dark-soft); }
+
+.meet-body { max-width: 46ch; }
+.meet-body p { color: var(--on-dark-soft); font-size: 1.06rem; }
+.meet-body p:first-child { color: var(--on-dark); font-size: 1.14rem; }
+.meet-actions { margin-top: 26px; }
+.meet-actions .btn { flex: 1 1 200px; }
+.meet-btn { transition: background-color .2s, color .2s, border-color .2s, transform .25s ease, box-shadow .25s ease; }
+.meet-btn:hover { transform: translateY(-2px); }
+.meet-btn.btn-pink:hover { box-shadow: 0 12px 26px -12px rgba(209, 8, 111, .7); }
+.meet-btn.btn-ghost:hover { box-shadow: 0 12px 26px -14px rgba(212, 175, 55, .45); }
+.meet-btn .ic { transition: transform .25s ease; }
+.meet-btn:hover .ic:last-child { transform: translateX(3px); }
+.meet-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; min-height: 44px; color: var(--gold-hi); text-decoration: none; font-size: .95rem; }
+.meet-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+@media (max-width: 400px) { .meet-rule { width: 28px; } .meet-eyebrow { letter-spacing: .18em; } .meet-cap { letter-spacing: .14em; } }
+@media (min-width: 900px) {
+  .meet-grid { grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto; grid-template-areas: "intro film" "body film";
+    column-gap: clamp(56px, 8vw, 120px); row-gap: 28px; align-items: center; }
+  .meet-intro { align-self: end; }
+  .meet-body { align-self: start; }
+  .meet-film { width: 330px; margin-right: 14px; }
+  .meet-actions .btn { flex: 0 0 auto; }
+}
+@media (min-width: 1100px) { .meet-film { width: 350px; } }
+
+/* entrance: a gold line draws in, then the heading rises. Only with JS and when motion is welcome. */
+@media (prefers-reduced-motion: no-preference) {
+  .js .meet[data-reveal] .meet-rule { transform: scaleX(0); transition: transform 1.1s cubic-bezier(.2, .7, .2, 1) .1s; }
+  .js .meet[data-reveal] .meet-title, .js .meet[data-reveal] .meet-sub { opacity: 0; transform: translateY(16px); transition: opacity .9s ease, transform .9s cubic-bezier(.2, .7, .2, 1); }
+  .js .meet[data-reveal] .meet-title { transition-delay: .25s; }
+  .js .meet[data-reveal] .meet-sub { transition-delay: .45s; }
+  .js .meet[data-reveal] .meet-film { opacity: 0; transition: opacity 1.1s ease .2s; }
+  .js .meet.is-in .meet-rule { transform: scaleX(1); }
+  .js .meet.is-in .meet-title, .js .meet.is-in .meet-sub { opacity: 1; transform: none; }
+  .js .meet.is-in .meet-film { opacity: 1; }
+}
+
 /* ============================================================ SERVICES */
 .svc-home { display: grid; gap: 8px; }
 .svc-rows { border-top: 1px solid var(--line); }
