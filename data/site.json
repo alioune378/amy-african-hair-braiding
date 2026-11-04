@@ -5,8 +5,7 @@
   "established": "2010",
   "_established_note": "From the salon sign (EST 2010). Leave empty to hide.",
   "site_url": "",
-  "draft_placeholders": true,
-
+  "draft_placeholders": false,
   "address": {
     "street": "10007 St Charles Rock Rd",
     "city": "St Ann",
@@ -18,26 +17,19 @@
   "phone_e164": "+13142491615",
   "phone_secondary": "",
   "_phone_secondary_note": "Instagram shows (314) 429-2823. Add it here only after Amy confirms it.",
-
   "instagram_handle": "amy_african_hair_braidingn",
   "instagram_url": "https://www.instagram.com/amy_african_hair_braidingn/",
-
   "tiktok_handle": "amy.10007.st.charl",
   "tiktok_url": "https://www.tiktok.com/@amy.10007.st.charl",
   "_tiktok_note": "From Amy (Nov 2026). Leave both empty to hide every TikTok link.",
-
   "whatsapp_number": "",
   "_whatsapp_note": "Digits only, e.g. 13142491615. Leave empty unless Amy uses WhatsApp for business.",
-
   "google_maps_url": "https://www.google.com/maps/search/?api=1&query=Amy+African+Hair+Braiding+And+Boutique+10007+St+Charles+Rock+Rd+St+Ann+MO+63074",
   "google_reviews_url": "https://www.google.com/maps/search/?api=1&query=Amy+African+Hair+Braiding+And+Boutique+10007+St+Charles+Rock+Rd+St+Ann+MO+63074",
   "_google_reviews_note": "Replace with the exact Google review link from Amy's Business Profile (Share > Ask for reviews) once available.",
-
   "hours": [],
   "_hours_note": "Fill only with hours Amy confirms, e.g. [[\"Mon–Fri\", \"9:00 AM – 7:00 PM\"], [\"Sat\", \"8:00 AM – 6:00 PM\"]]. Empty shows 'Call to confirm hours'. Do not use Google's 24-hour listing.",
-
   "parking": "",
-
   "google_rating": {
     "show": false,
     "value": 2.8,
@@ -45,36 +37,70 @@
     "as_of": "October 2026",
     "_note": "If show is true, the real rating is displayed exactly as it is on Google, with the date."
   },
-
   "about": {
     "photo": "",
     "story": [],
     "experience": "",
     "approach": "",
     "team": "",
-    "vision": ""
+    "vision": "",
+    "_note": "Fill any of these in Amy's own words; empty fields are hidden. story can be a list of paragraphs."
   },
-
   "policies": {
     "deposit": "",
     "cancellation": "",
     "late_arrival": "",
     "hair_preparation": ""
   },
-
   "faq": [
-    {"q": "Should I arrive with washed hair?", "a": ""},
-    {"q": "Is hair included in the price?", "a": ""},
-    {"q": "Are deposits required?", "a": ""},
-    {"q": "Can I bring my own hair?", "a": ""},
-    {"q": "How long do appointments take?", "a": ""},
-    {"q": "Are walk-ins accepted?", "a": ""},
-    {"q": "What is the cancellation policy?", "a": ""}
+    {
+      "q": "Should I arrive with washed hair?",
+      "a": ""
+    },
+    {
+      "q": "Is hair included in the price?",
+      "a": ""
+    },
+    {
+      "q": "Are deposits required?",
+      "a": ""
+    },
+    {
+      "q": "Can I bring my own hair?",
+      "a": ""
+    },
+    {
+      "q": "How long do appointments take?",
+      "a": ""
+    },
+    {
+      "q": "Are walk-ins accepted?",
+      "a": ""
+    },
+    {
+      "q": "What is the cancellation policy?",
+      "a": ""
+    }
   ],
-
   "boutique": {
     "show": true,
-    "categories": ["Hair extensions", "Hair accessories", "Beauty products", "Fashion accessories"],
-    "confirmed": false
+    "categories": [
+      "Hair extensions",
+      "Hair accessories",
+      "Beauty products",
+      "Fashion accessories"
+    ],
+    "confirmed": false,
+    "items": [],
+    "_items_note": "Real products only: {\"name\": \"...\", \"image\": \"images/boutique/x.webp\", \"note\": \"...\"}. With no items, the site shows a short boutique introduction."
+  },
+  "_draft_note": "Internal placeholders are no longer rendered on the public site. Missing content is simply hidden.",
+  "hero": {
+    "image": "images/styles/box-braids-example.webp",
+    "image_width": 495,
+    "image_height": 619,
+    "image_is_example": true,
+    "alt": "Example of long box braids",
+    "_note": "Replace with a real, authorised photo of Amy's work (about 900x1125px, e.g. images/hero/amy-hero.webp) and set image_is_example to false."
   }
 }
