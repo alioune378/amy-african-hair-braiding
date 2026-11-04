@@ -5,10 +5,31 @@
     "home: true shows the video on the home page (up to 3)."
   ],
   "videos": [
-    {"url": "https://www.tiktok.com/t/ZTfwPVoxU/", "video_id": "", "title": "Fresh braids on TikTok", "home": true},
-    {"url": "https://www.tiktok.com/t/ZPLaJRGQP/", "video_id": "", "title": "From the chair", "home": true},
-    {"url": "https://www.tiktok.com/t/ZTfwPqsP2/", "video_id": "", "title": "Braiding by Amy", "home": true},
-    {"url": "https://www.tiktok.com/t/ZTfwPHTDM/", "video_id": "", "title": "New look, same care", "home": false},
-    {"url": "https://www.tiktok.com/t/ZPLaJqn3B/", "video_id": "", "title": "Styles you’ll love", "home": false}
-  ]
+    {
+      "url": "https://www.tiktok.com/t/ZTfobPfMr/",
+      "video_id": "",
+      "title": "Fresh braids on TikTok",
+      "home": true
+    },
+    {
+      "url": "https://www.tiktok.com/t/ZPLHagKDT/",
+      "video_id": "",
+      "title": "From the chair",
+      "home": true
+    },
+    {
+      "url": "https://www.tiktok.com/t/ZPLHaQQ55/",
+      "video_id": "",
+      "title": "Braiding by Amy",
+      "home": true
+    }
+  ],
+  "_previous_links": [
+    "https://www.tiktok.com/t/ZTfwPVoxU/",
+    "https://www.tiktok.com/t/ZPLaJRGQP/",
+    "https://www.tiktok.com/t/ZTfwPqsP2/",
+    "https://www.tiktok.com/t/ZTfwPHTDM/",
+    "https://www.tiktok.com/t/ZPLaJqn3B/"
+  ],
+  "_previous_note": "Earlier share links, replaced by the three above (Nov 2026). Re-add any that are different videos."
 }
