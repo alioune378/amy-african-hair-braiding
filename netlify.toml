@@ -7,6 +7,13 @@
   [headers.values]
     Cache-Control = "public, max-age=2592000"
 
+# Meet Amy footage and poster. File names carry a version (-v1); upload a new
+# version under a new name instead of overwriting, so visitors never get a stale copy.
+[[headers]]
+  for = "/media/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
 [[headers]]
   for = "/*"
   [headers.values]

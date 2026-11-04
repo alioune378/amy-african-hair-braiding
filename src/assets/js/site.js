@@ -285,4 +285,75 @@
         });
     });
   }
+  /* ---------- Meet Amy: silent salon footage.
+     Files load only as the section approaches; it plays while on screen and pauses when scrolled away.
+     Reduced motion or Data Saver: the poster stays until the visitor taps play. If playback fails, the poster remains. */
+  var film = $("[data-film]");
+  if (film) {
+    var fv = $("[data-film-video]", film), fbtn = $("[data-film-toggle]", film), flabel = $("[data-film-label]", film);
+    var rm = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
+    var saveData = !!(navigator.connection && navigator.connection.saveData);
+    var autoOK = function () { return !(rm && rm.matches) && !saveData; };
+    var loaded = false, failed = false, userPaused = false, onScreen = false;
+    var setState = function (st) {
+      film.setAttribute("data-state", st);
+      if (flabel) flabel.textContent = st === "playing" ? "Pause video" : "Play video";
+    };
+    var fail = function () {
+      if (failed) return;
+      failed = true; setState("failed"); fbtn.hidden = true;
+      try { fv.pause(); fv.removeAttribute("src"); } catch (err) {}
+    };
+    var loadFilm = function () {
+      if (loaded || failed) return;
+      loaded = true;
+      var srcs = $$("source", fv);
+      srcs.forEach(function (s) { s.src = s.getAttribute("data-src"); });
+      if (srcs.length) srcs[srcs.length - 1].addEventListener("error", fail);
+      fv.addEventListener("error", fail);
+      fv.load();
+    };
+    var playFilm = function () {
+      if (failed) return;
+      loadFilm();
+      var p = fv.play();
+      if (p && p.catch) p.catch(function (err) { if (err && err.name === "NotSupportedError") fail(); else setState("paused"); });
+    };
+    fv.addEventListener("playing", function () { setState("playing"); });
+    fv.addEventListener("pause", function () { if (!failed) setState("paused"); });
+    fbtn.hidden = false;
+    fbtn.addEventListener("click", function () {
+      if (fv.paused) { userPaused = false; playFilm(); } else { userPaused = true; fv.pause(); }
+    });
+    if (rm && rm.addEventListener) rm.addEventListener("change", function () { if (rm.matches && !fv.paused) fv.pause(); });
+    if ("IntersectionObserver" in window) {
+      /* wait for the page itself to finish loading so the footage never competes with the hero */
+      var watchNear = function () {
+        new IntersectionObserver(function (es) {
+          if (es[0].isIntersecting && autoOK()) loadFilm();
+        }, { rootMargin: "400px 0px" }).observe(film);
+      };
+      if (document.readyState === "complete") watchNear(); else window.addEventListener("load", watchNear);
+      new IntersectionObserver(function (es) {
+        onScreen = es[0].isIntersecting && es[0].intersectionRatio >= 0.35;
+        if (onScreen) { if (autoOK() && !userPaused && fv.paused) playFilm(); }
+        else if (!fv.paused) fv.pause();
+      }, { threshold: [0, 0.35, 0.6] }).observe(film);
+    } else if (autoOK()) {
+      playFilm();
+    }
+  }
+
+  /* ---------- gentle entrance for sections marked data-reveal */
+  var reveals = $$("[data-reveal]");
+  if (reveals.length) {
+    if ("IntersectionObserver" in window) {
+      var rio = new IntersectionObserver(function (es) {
+        es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("is-in"); rio.unobserve(en.target); } });
+      }, { threshold: 0.18 });
+      reveals.forEach(function (el) { rio.observe(el); });
+    } else {
+      reveals.forEach(function (el) { el.classList.add("is-in"); });
+    }
+  }
 })();

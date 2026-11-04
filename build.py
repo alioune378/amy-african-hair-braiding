@@ -63,6 +63,7 @@ ICONS = {
     "map": '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/>',
     "play": '<path d="M7 4.5v15l13-7.5z" fill="currentColor" stroke="none"/>',
     "arrow": '<path d="M5 12h14M13 6l6 6-6 6"/>',
+    "pause": '<path d="M8 5v14M16 5v14" stroke-width="2.4"/>',
     "external": '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
     "star": '<path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6l6.2-.9z" fill="currentColor" stroke="none"/>',
     "menu": '<path d="M4 7h16M4 12h16M4 17h16"/>',
@@ -461,6 +462,48 @@ def hero_media():
             f'fetchpriority="high" decoding="async">{tag}{cap}</figure>')
 
 
+def meet_amy():
+    """Owner introduction with her own silent salon footage. The video files load only when the
+    section nears the viewport (site.js); without JS, or if playback fails, the poster photo stays."""
+    v = "media/amy-at-work-v1"
+    poster = "media/amy-at-work-poster-v1.jpg"
+    desc = "Amy at work in her St. Ann salon, braiding and finishing a smiling client's crochet twists."
+    return f'''<section class="meet" aria-labelledby="meet-h" data-reveal>
+  <div class="wrap meet-grid">
+    <div class="meet-intro">
+      <p class="eyebrow meet-eyebrow"><span class="meet-rule" aria-hidden="true"></span>The woman behind the braids</p>
+      <h2 id="meet-h" class="meet-title">Meet <em>Amy.</em></h2>
+      <p class="meet-sub">The Hands. The Artistry. <span class="meet-nb">The Woman Behind the Beauty.</span></p>
+    </div>
+    <figure class="meet-film">
+      <div class="meet-frame" data-film data-state="poster">
+        <img class="meet-poster" src="{poster}" width="464" height="832" alt="{e(desc)}" loading="lazy" decoding="async">
+        <video class="meet-video" width="464" height="832" muted loop playsinline preload="none" disablepictureinpicture
+               poster="{poster}" aria-hidden="true" tabindex="-1" data-film-video>
+          <source data-src="{v}.webm" type='video/webm; codecs="vp9"'>
+          <source data-src="{v}.mp4" type='video/mp4; codecs="avc1.64001E"'>
+        </video>
+        <button class="meet-toggle" type="button" hidden data-film-toggle>
+          <span class="meet-toggle-pause">{ic("pause")}</span><span class="meet-toggle-play">{ic("play")}</span>
+          <span class="sr" data-film-label>Play video</span>
+        </button>
+      </div>
+      <figcaption class="meet-cap">Inside the salon · St. Ann, MO</figcaption>
+    </figure>
+    <div class="meet-body">
+      <p>Behind every beautiful braid is a skilled pair of hands, patience, and a passion for making people feel their best.</p>
+      <p>Meet Amy, the woman behind Amy African Hair Braiding &amp; Boutique in St. Ann, Missouri.</p>
+      <p>Step inside her salon, experience her artistry, and discover the personal care behind every style.</p>
+      <div class="btn-row meet-actions">
+        <a class="btn btn-ghost meet-btn" href="gallery.html">Explore Our Styles {ic("arrow")}</a>
+        <a class="btn btn-pink meet-btn" href="contact.html#book">{ic("calendar")}<span>Book an Appointment</span></a>
+      </div>
+      <a class="meet-link" href="services.html">Or see the services Amy offers {ic("arrow")}</a>
+    </div>
+  </div>
+</section>'''
+
+
 # ---------------------------------------------------------------- pages
 def page_home():
     why = [("Since " + EST if EST else "Experienced", "Braiding in St. Ann for over a decade." if EST else "Years of braiding experience."),
@@ -500,6 +543,8 @@ def page_home():
     {hero_media()}
   </div>
 </section>
+
+{meet_amy()}
 
 <section class="band band-light" aria-labelledby="svc-h">
   <div class="wrap svc-home">
