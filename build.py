@@ -36,6 +36,13 @@ e = lambda s: html.escape(str(s or ""), quote=True)
 A = S["address"]
 ADDR_LINE = f'{A["street"]}, {A["city"]}, {A["region"]} {A["postal"]}'
 TEL = "tel:" + S["phone_e164"]
+PHONE2 = S.get("phone_secondary") or ""
+TEL2 = "tel:" + (S.get("phone_secondary_e164") or re.sub(r"[^0-9+]", "", PHONE2))
+
+
+def call2(cls):
+    """Second 'Call' button, only when a second number is set."""
+    return f'<a class="{cls}" href="{TEL2}">{ic("phone")}<span>Call {e(PHONE2)}</span></a>' if PHONE2 else ""
 IG = S["instagram_url"]
 IG_HANDLE = S.get("instagram_handle") or ""
 TT = S.get("tiktok_url") or ""
@@ -165,6 +172,7 @@ def header(page):
   <div class="menu-actions">
     <a class="btn btn-pink btn-block" href="contact.html#book">{ic("calendar")}<span>Book an appointment</span></a>
     <a class="btn btn-ghost btn-block" href="{TEL}">{ic("phone")}<span>Call {e(S["phone"])}</span></a>
+    {call2("btn btn-ghost btn-block")}
   </div>
   <div class="menu-social">{social}</div>
 </div>'''
@@ -184,7 +192,7 @@ def foot():
     <div>
       <h2 class="foot-h">Visit</h2>
       <address><a href="{e(MAPS)}" target="_blank" rel="noopener">{e(A["street"])}<br>{e(A["city"])}, {e(A["region"])} {e(A["postal"])}</a></address>
-      <p><a href="{TEL}">{e(S["phone"])}</a></p>
+      <p><a href="{TEL}">{e(S["phone"])}</a>{f'<br><a href="{TEL2}">{e(PHONE2)}</a>' if PHONE2 else ""}</p>
     </div>
     <div>
       <h2 class="foot-h">Hours</h2>
@@ -211,7 +219,7 @@ def hours_html():
     if S.get("hours"):
         rows = "".join(f"<li><span>{e(d)}</span><span>{e(h)}</span></li>" for d, h in S["hours"])
         return f'<ul class="hours">{rows}</ul>'
-    return f'<p class="muted">Please call to confirm today’s hours.<br><a href="{TEL}">{e(S["phone"])}</a></p>'
+    return f'<p class="muted">Please call to confirm today’s hours.<br><a href="{TEL}">{e(S["phone"])}</a>{f' · <a href="{TEL2}">{e(PHONE2)}</a>' if PHONE2 else ""}</p>'
 
 
 def sec_head(eyebrow, title, lede="", center=False):
@@ -409,6 +417,7 @@ def booking_cta():
     <div class="btn-row center-row">
       <a class="btn btn-pink" href="contact.html#book">{ic("calendar")}<span>Book an appointment</span></a>
       <a class="btn btn-ghost" href="{TEL}">{ic("phone")}<span>Call {e(S["phone"])}</span></a>
+      {call2("btn btn-ghost")}
     </div>
   </div>
 </section>'''
@@ -474,7 +483,7 @@ def page_home():
 <div class="center-row"><a class="btn btn-dark" href="gallery.html">Explore Amy’s work {ic("arrow")}</a></div></div></section>'''
     preload = f'<link rel="preload" as="image" href="{e(HERO["image"])}">' if HERO.get("image") else ""
     return head("index.html", "Amy African Hair Braiding | Braids in St. Ann & St. Louis, MO",
-                f"African hair braiding in St. Ann, MO, near St. Louis: braids, box braids, hair extensions and styling. Call {S['phone']} or request an appointment online.",
+                f"African hair braiding in St. Ann, MO, near St. Louis: braids, box braids, hair extensions and styling. Call {S['phone']}{' or ' + PHONE2 if PHONE2 else ''}, or request an appointment online.",
                 preload) + f'''
 <section class="hero" aria-labelledby="hero-h">
   <div class="wrap hero-grid">
@@ -664,13 +673,13 @@ def page_contact():
                    f'<div class="policies">{pol_html}</div></div></section>') if pol_html else ""
     wa = (f'<a class="contact-line" href="https://wa.me/{e(S["whatsapp_number"])}" target="_blank" rel="noopener">{ic("chat")}<span>WhatsApp</span></a>'
           if S.get("whatsapp_number") else "")
-    sec_phone = f'<p>Also: <a href="tel:{e(S["phone_secondary"])}">{e(S["phone_secondary"])}</a></p>' if S.get("phone_secondary") else ""
+    sec_phone = f'<a class="contact-line" href="{TEL2}">{ic("phone")}<span>{e(PHONE2)}</span></a>' if PHONE2 else ""
     park = f'<p class="muted">{e(S["parking"])}</p>' if S.get("parking") else ""
     return head("contact.html", "Book an Appointment | Amy African Hair Braiding, St. Ann, MO",
-                f"Request a braiding appointment at Amy African Hair Braiding And Boutique, {ADDR_LINE}. Call {S['phone']}.") + page_hero(
+                f"Request a braiding appointment at Amy African Hair Braiding And Boutique, {ADDR_LINE}. Call {S['phone']}{' or ' + PHONE2 if PHONE2 else ''}.") + page_hero(
         "Book", "Request an <em>appointment</em>",
         "Tell us the style and the day you’d like. We’ll contact you to confirm a time. Prefer to talk? Call the salon.",
-        f'<div class="btn-row"><a class="btn btn-ghost-dark" href="{TEL}">{ic("phone")}<span>Call {e(S["phone"])}</span></a></div>') + f'''
+        f'<div class="btn-row"><a class="btn btn-ghost-dark" href="{TEL}">{ic("phone")}<span>Call {e(S["phone"])}</span></a>{call2("btn btn-ghost-dark")}</div>') + f'''
 <section class="band band-light" id="book">
   <div class="wrap book-grid">
     <form class="book-form" name="booking" method="POST" action="booking-received.html" enctype="multipart/form-data"
@@ -726,6 +735,7 @@ def page_received():
     <p class="lede">Your appointment request has been sent to the salon. It isn’t a confirmed booking yet: we’ll call or text you to confirm a time.</p>
     <div class="btn-row center-row">
       <a class="btn btn-pink" href="{TEL}">{ic("phone")}<span>Call {e(S["phone"])}</span></a>
+      {call2("btn btn-ghost-dark")}
       <a class="btn btn-ghost-dark" href="index.html">Back to home</a>
     </div>
   </div>
