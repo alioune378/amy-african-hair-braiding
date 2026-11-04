@@ -161,6 +161,41 @@
       if (reel.getAttribute("data-kind") === "tiktok") playTt(reel); else playIg(reel);
     });
   });
+  /* Previews: as each card comes into view, show the platform's own preview —
+     TikTok's cover image (from its public oEmbed) and Instagram's post embed — without playing anything. */
+  var ttCover = function (reel) {
+    if (reel.querySelector(".reel-facade img")) return;
+    var url = reel.getAttribute("data-url");
+    if (!url || !window.fetch) return;
+    fetch("https://www.tiktok.com/oembed?url=" + encodeURIComponent(url))
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (d) {
+        var m = /data-video-id="(\d+)"/.exec(d.html || "") || /video\/(\d+)/.exec(d.html || "");
+        var id = (m && m[1]) || d.embed_product_id;
+        if (id && !reel.getAttribute("data-vid")) reel.setAttribute("data-vid", id);
+        if (d.thumbnail_url) {
+          var img = document.createElement("img");
+          img.alt = ""; img.decoding = "async"; img.src = d.thumbnail_url;
+          var fac = $(".reel-facade", reel); fac.insertBefore(img, fac.firstChild);
+        }
+      })
+      .catch(function () { /* keep the branded cover */ });
+  };
+  var previewed = 0;
+  if ("IntersectionObserver" in window) {
+    var pio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var reel = en.target; pio.unobserve(reel);
+        if (reel.getAttribute("data-kind") === "tiktok") ttCover(reel);
+        else if (reel.getAttribute("data-kind") === "instagram" && !reel.getAttribute("data-state") && previewed < 6) {
+          previewed++; reel.setAttribute("data-state", "loading"); playIg(reel);
+        }
+      });
+    }, { rootMargin: "100px 200px" });
+    $$('.reel[data-kind="tiktok"], .reel[data-kind="instagram"]').forEach(function (r) { pio.observe(r); });
+  }
+
   document.addEventListener("play", function (ev) {
     if (ev.target.tagName !== "VIDEO") return;
     $$("video").forEach(function (v) { if (v !== ev.target && !v.paused) v.pause(); });
