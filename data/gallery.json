@@ -1,10 +1,263 @@
 {
   "_help": [
-    "Real photos of Amy's work only, with permission from any client whose face is shown.",
-    "Put files in src/images/gallery/ (WebP or JPG, about 1200px on the long side). style must match a service name for the filter.",
-    "Example photo: {\"src\": \"images/gallery/knotless-waist-length.webp\", \"alt\": \"Waist-length knotless braids, back view\", \"style\": \"Knotless Braids\", \"width\": 900, \"height\": 1200}",
-    "Before/after pairs show a comparison slider; only add genuine pairs of the same client: {\"before\": \"images/gallery/x-before.webp\", \"after\": \"images/gallery/x-after.webp\", \"alt\": \"...\", \"style\": \"Box Braids\"}"
+    "Real photos of Amy's work only. Files live in src/images/gallery/ (responsive WebP + JPG made from the originals in originals/).",
+    "style is the portfolio category; book_as is the service preselected when a visitor taps 'Book this look'. home: true shows it on the homepage (6 recommended).",
+    "Held back (not shown): 11_Feeding_Braids_Alternate_Closeup.jpg (app icons and a pixelated band over the face) and 17_Curly_Twist_Braids_Portrait.jpg (motion blur)."
   ],
-  "photos": [],
+  "photos": [
+    {
+      "src": "images/gallery/box-braids-long-length.jpg",
+      "base": "images/gallery/box-braids-long-length",
+      "widths": [
+        480,
+        800,
+        941
+      ],
+      "width": 941,
+      "height": 1672,
+      "style": "Box Braids",
+      "book_as": "Box Braids",
+      "alt": "Long black box braids reaching past the waist, side view",
+      "home": true,
+      "source_file": "02_Black_Box_Braids_Long_Length.jpg"
+    },
+    {
+      "src": "images/gallery/feed-in-braids-closeup.jpg",
+      "base": "images/gallery/feed-in-braids-closeup",
+      "widths": [
+        480,
+        800,
+        941
+      ],
+      "width": 941,
+      "height": 1672,
+      "style": "Feed-In Braids / Cornrows",
+      "book_as": "Feed-In Braids",
+      "alt": "Close-up of curved feed-in braids with sculpted edges",
+      "home": true,
+      "source_file": "09_Feeding_Braids_Closeup.jpg"
+    },
+    {
+      "src": "images/gallery/blonde-boho-braids-back.jpg",
+      "base": "images/gallery/blonde-boho-braids-back",
+      "widths": [
+        480,
+        800,
+        941
+      ],
+      "width": 941,
+      "height": 1672,
+      "style": "Boho & Goddess-Inspired Braids",
+      "book_as": "Bohemian Braids",
+      "alt": "Blonde boho braids with loose curls, back view",
+      "home": true,
+      "source_file": "05_Blonde_Boho_Braids_Back.jpg"
+    },
+    {
+      "src": "images/gallery/feed-in-braids-back.jpg",
+      "base": "images/gallery/feed-in-braids-back",
+      "widths": [
+        480,
+        800,
+        941
+      ],
+      "width": 941,
+      "height": 1672,
+      "style": "Feed-In Braids / Cornrows",
+      "book_as": "Feed-In Braids",
+      "alt": "Feed-in braids in a curved pattern flowing into long braids, back view",
+      "home": true,
+      "source_file": "07_Feeding_Braids_Back.jpg"
+    },
+    {
+      "src": "images/gallery/golden-boho-braids-side.jpg",
+      "base": "images/gallery/golden-boho-braids-side",
+      "widths": [
+        480,
+        800,
+        941
+      ],
+      "width": 941,
+      "height": 1672,
+      "style": "Boho & Goddess-Inspired Braids",
+      "book_as": "Bohemian Braids",
+      "alt": "Golden boho braids with curly pieces, side view",
+      "home": true,
+      "source_file": "04_Golden_Boho_Braids_Side.jpg"
+    },
+    {
+      "src": "images/gallery/curly-twists-front.jpg",
+      "base": "images/gallery/curly-twists-front",
+      "widths": [
+        480,
+        792
+      ],
+      "width": 792,
+      "height": 1303,
+      "style": "Twists & Curly Styles",
+      "book_as": "Curly Twists",
+      "alt": "Shoulder-length curly twists, front view",
+      "home": true,
+      "source_file": "15_Curly_Twist_Braids_Front.jpg"
+    },
+    {
+      "src": "images/gallery/box-braids-top-view.jpg",
+      "base": "images/gallery/box-braids-top-view",
+      "widths": [
+        480,
+        800,
+        941
+      ],
+      "width": 941,
+      "height": 1672,
+      "style": "Box Braids",
+      "book_as": "Box Braids",
+      "alt": "Small black box braids seen from above, showing neat square parts",
+      "home": false,
+      "source_file": "01_Black_Box_Braids_Top_View.jpg"
+    },
+    {
+      "src": "images/gallery/box-braids-portrait.jpg",
+      "base": "images/gallery/box-braids-portrait",
+      "widths": [
+        480,
+        800,
+        941
+      ],
+      "width": 941,
+      "height": 1672,
+      "style": "Box Braids",
+      "book_as": "Box Braids",
+      "alt": "Long black box braids, front view",
+      "home": false,
+      "source_file": "03_Black_Braids_Portrait.jpg"
+    },
+    {
+      "src": "images/gallery/golden-boho-braids-portrait.jpg",
+      "base": "images/gallery/golden-boho-braids-portrait",
+      "widths": [
+        480,
+        800,
+        941
+      ],
+      "width": 941,
+      "height": 1672,
+      "style": "Boho & Goddess-Inspired Braids",
+      "book_as": "Bohemian Braids",
+      "alt": "Golden boho braids swept to one side",
+      "home": false,
+      "source_file": "06_Golden_Braids_Portrait.jpg"
+    },
+    {
+      "src": "images/gallery/feed-in-braids-top.jpg",
+      "base": "images/gallery/feed-in-braids-top",
+      "widths": [
+        480,
+        800,
+        941
+      ],
+      "width": 941,
+      "height": 1672,
+      "style": "Feed-In Braids / Cornrows",
+      "book_as": "Feed-In Braids",
+      "alt": "Feed-in braids seen from above, curving into a long braided ponytail",
+      "home": false,
+      "source_file": "08_Feeding_Braids_Top.jpg"
+    },
+    {
+      "src": "images/gallery/feed-in-braids-side.jpg",
+      "base": "images/gallery/feed-in-braids-side",
+      "widths": [
+        480,
+        800,
+        941
+      ],
+      "width": 941,
+      "height": 1672,
+      "style": "Feed-In Braids / Cornrows",
+      "book_as": "Feed-In Braids",
+      "alt": "Feed-in braids with a curved design, side view",
+      "home": false,
+      "source_file": "10_Feeding_Braids_Side.jpg"
+    },
+    {
+      "src": "images/gallery/highlighted-braids-profile.jpg",
+      "base": "images/gallery/highlighted-braids-profile",
+      "widths": [
+        480,
+        800,
+        1006
+      ],
+      "width": 1006,
+      "height": 1089,
+      "style": "Box Braids",
+      "book_as": "Box Braids",
+      "alt": "Small box braids with blonde highlights, profile",
+      "home": false,
+      "source_file": "14_Highlighted_Micro_Braids_Profile.jpg"
+    },
+    {
+      "src": "images/gallery/highlighted-braids-top.jpg",
+      "base": "images/gallery/highlighted-braids-top",
+      "widths": [
+        480,
+        796
+      ],
+      "width": 796,
+      "height": 1388,
+      "style": "Box Braids",
+      "book_as": "Box Braids",
+      "alt": "Small box braids with blonde highlights, top view",
+      "home": false,
+      "source_file": "12_Highlighted_Micro_Braids_Top.jpg"
+    },
+    {
+      "src": "images/gallery/highlighted-braids-long-back.jpg",
+      "base": "images/gallery/highlighted-braids-long-back",
+      "widths": [
+        480,
+        608
+      ],
+      "width": 608,
+      "height": 1818,
+      "style": "Box Braids",
+      "book_as": "Box Braids",
+      "alt": "Waist-length box braids with blonde highlights, back view",
+      "home": false,
+      "source_file": "13_Highlighted_Micro_Braids_Long_Back.jpg"
+    },
+    {
+      "src": "images/gallery/curly-twists-side.jpg",
+      "base": "images/gallery/curly-twists-side",
+      "widths": [
+        480,
+        800,
+        809
+      ],
+      "width": 809,
+      "height": 1278,
+      "style": "Twists & Curly Styles",
+      "book_as": "Curly Twists",
+      "alt": "Curly twists, side view",
+      "home": false,
+      "source_file": "16_Curly_Twist_Braids_Side.jpg"
+    },
+    {
+      "src": "images/gallery/curly-twists-stylist.jpg",
+      "base": "images/gallery/curly-twists-stylist",
+      "widths": [
+        480,
+        800,
+        827
+      ],
+      "width": 827,
+      "height": 1270,
+      "style": "Twists & Curly Styles",
+      "book_as": "Curly Twists",
+      "alt": "Curly twists with a defined, full shape",
+      "home": false,
+      "source_file": "18_Curly_Twist_Braids_Stylist.jpg"
+    }
+  ],
   "before_after": []
 }

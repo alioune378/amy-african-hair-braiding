@@ -24,9 +24,9 @@
       "sizes": "",
       "duration": "",
       "price_from": "",
-      "image": "images/styles/braids-example.webp",
-      "image_label": "Example style",
-      "image_position": "50% 40%"
+      "image": "images/gallery/feed-in-braids-back-800.webp",
+      "image_label": "",
+      "image_position": "50% 25%"
     },
     {
       "slug": "box-braids",
@@ -39,9 +39,57 @@
       "sizes": "",
       "duration": "",
       "price_from": "",
-      "image": "images/styles/box-braids-example.webp",
-      "image_label": "Example style",
+      "image": "images/gallery/box-braids-long-length-800.webp",
+      "image_label": "",
       "image_position": "50% 25%"
+    },
+    {
+      "slug": "feed-in-braids",
+      "name": "Feed-In Braids",
+      "category": "Cornrows",
+      "confirmed": true,
+      "signature": true,
+      "description": "Cornrows that start small and build gradually for a natural, seamless look.",
+      "lengths": "",
+      "sizes": "",
+      "duration": "",
+      "price_from": "",
+      "image": "images/gallery/feed-in-braids-closeup-800.webp",
+      "image_label": "",
+      "image_position": "50% 25%",
+      "_confirmed_note": "Shown in Amy's own photos (Nov 2026)."
+    },
+    {
+      "slug": "bohemian-braids",
+      "name": "Bohemian Braids",
+      "category": "Braids",
+      "confirmed": true,
+      "signature": true,
+      "description": "Free-spirited braids with curls left loose throughout.",
+      "lengths": "",
+      "sizes": "",
+      "duration": "",
+      "price_from": "",
+      "image": "images/gallery/blonde-boho-braids-back-800.webp",
+      "image_label": "",
+      "image_position": "50% 25%",
+      "_confirmed_note": "Shown in Amy's own photos (Nov 2026)."
+    },
+    {
+      "slug": "curly-twists",
+      "name": "Curly Twists",
+      "category": "Twists",
+      "confirmed": true,
+      "signature": true,
+      "description": "Full, bouncy twists with a soft curly texture, for a lighter, playful look.",
+      "lengths": "",
+      "sizes": "",
+      "duration": "",
+      "price_from": "",
+      "image": "images/gallery/curly-twists-front-792.webp",
+      "image_label": "",
+      "image_position": "50% 20%",
+      "_confirmed_note": "Shown in Amy's own photos (Nov 2026). Confirm the name she uses (e.g. passion or spring twists)."
     },
     {
       "slug": "hair-extensions",
@@ -54,9 +102,9 @@
       "sizes": "",
       "duration": "",
       "price_from": "",
-      "image": "images/styles/hair-extensions-example.webp",
-      "image_label": "Example style",
-      "image_position": "50% 20%"
+      "image": "images/gallery/highlighted-braids-long-back-608.webp",
+      "image_label": "",
+      "image_position": "50% 25%"
     },
     {
       "slug": "hairstyling",
@@ -69,8 +117,8 @@
       "sizes": "",
       "duration": "",
       "price_from": "",
-      "image": "images/styles/hairstyling-example.webp",
-      "image_label": "Example style",
+      "image": "",
+      "image_label": "",
       "image_position": "50% 8%"
     },
     {
@@ -113,38 +161,12 @@
       "image": ""
     },
     {
-      "slug": "feed-in-braids",
-      "name": "Feed-In Braids",
-      "category": "Cornrows",
-      "confirmed": false,
-      "signature": true,
-      "description": "Cornrows that start small and build gradually for a natural, seamless look.",
-      "lengths": "",
-      "sizes": "",
-      "duration": "",
-      "price_from": "",
-      "image": ""
-    },
-    {
       "slug": "goddess-braids",
       "name": "Goddess Braids",
       "category": "Braids",
       "confirmed": false,
       "signature": true,
       "description": "Braids finished with soft curly pieces for a romantic, effortless look.",
-      "lengths": "",
-      "sizes": "",
-      "duration": "",
-      "price_from": "",
-      "image": ""
-    },
-    {
-      "slug": "bohemian-braids",
-      "name": "Bohemian Braids",
-      "category": "Braids",
-      "confirmed": false,
-      "signature": true,
-      "description": "Free-spirited braids with curls left loose throughout.",
       "lengths": "",
       "sizes": "",
       "duration": "",

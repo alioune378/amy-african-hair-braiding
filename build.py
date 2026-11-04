@@ -363,12 +363,30 @@ def video_showcase(home):
 </section>'''
 
 
-def photo_item(p):
+def photo_srcset(p):
+    if not p.get("base") or not p.get("widths"):
+        return ""
+    return ", ".join(f'{e(p["base"])}-{w}.webp {w}w' for w in p["widths"])
+
+
+def look_link(p):
+    q = urllib.parse.urlencode({"style": p.get("book_as") or "", "look": p.get("alt") or ""})
+    return f"contact.html?{q}#book"
+
+
+def photo_item(p, sizes="(max-width: 699px) 50vw, (max-width: 1099px) 33vw, 380px"):
     w, h = p.get("width") or 900, p.get("height") or 1200
     alt = p.get("alt", "")
-    return (f'<li class="m-item" data-cat="{e(p.get("style", ""))}"><button type="button" class="m-btn" data-lightbox="{e(p["src"])}" '
-            f'data-alt="{e(alt)}" aria-label="Enlarge photo: {e(alt)}"><img src="{e(p["src"])}" width="{w}" height="{h}" alt="{e(alt)}" loading="lazy" decoding="async"></button>'
-            + (f"<p class=m-cap>{e(p['style'])}</p>" if p.get("style") else "") + "</li>")
+    ss = photo_srcset(p)
+    big = f'{p["base"]}-{p["widths"][-1]}.webp' if ss else p["src"]
+    source = f'<source type="image/webp" srcset="{ss}" sizes="{sizes}">' if ss else ""
+    img = f'<picture>{source}<img src="{e(p["src"])}" width="{w}" height="{h}" alt="{e(alt)}" loading="lazy" decoding="async"></picture>'
+    link = look_link(p) if p.get("book_as") else ""
+    book = f'<a class="m-book" href="{e(link)}">Book this look {ic("arrow")}</a>' if link else ""
+    cap = f'<p class="m-cap">{e(p["style"])}</p>' if p.get("style") else ""
+    return (f'<li class="m-item" data-cat="{e(p.get("style", ""))}"><button type="button" class="m-btn" data-lightbox="{e(big)}" '
+            f'data-alt="{e(alt)}" data-cap="{e(p.get("style", ""))}" data-book="{e(link)}" aria-label="Enlarge photo: {e(alt)}">{img}</button>'
+            f'<div class="m-meta">{cap}{book}</div></li>')
 
 
 def review_card(r):
@@ -424,8 +442,11 @@ def hero_media():
         return ""
     tag = '<span class="tag-example">Style example</span>' if HERO.get("image_is_example") else ""
     w, h = HERO.get("image_width") or 900, HERO.get("image_height") or 1125
-    return (f'<figure class="hero-media"><img src="{e(src)}" width="{w}" height="{h}" alt="{e(HERO.get("alt") or "Braided hairstyle")}" '
-            f'fetchpriority="high" decoding="async">{tag}</figure>')
+    srcset = f' srcset="{e(HERO["srcset"])}" sizes="(max-width: 859px) 78vw, 400px"' if HERO.get("srcset") else ""
+    pos = f' style="object-position:{e(HERO["position"])}"' if HERO.get("position") else ""
+    cap = "" if HERO.get("image_is_example") else '<figcaption class="hero-cap">Box braids by Amy</figcaption>'
+    return (f'<figure class="hero-media"><img src="{e(src)}"{srcset} width="{w}" height="{h}" alt="{e(HERO.get("alt") or "Braided hairstyle")}"{pos} '
+            f'fetchpriority="high" decoding="async">{tag}{cap}</figure>')
 
 
 # ---------------------------------------------------------------- pages
@@ -433,19 +454,21 @@ def page_home():
     why = [("Since " + EST if EST else "Experienced", "Braiding in St. Ann for over a decade." if EST else "Years of braiding experience."),
            ("Attention to detail", "Clean parts, even tension and a neat finish."),
            ("Made for you", "Size, length and style chosen with you."),
-           ("Beautiful results", "See for yourself in the videos below.")]
+           ("Beautiful results", "Real styles by Amy, in photos and videos.")]
     home_reviews = ([r for r in REVIEWS if r.get("home")][:3] or REVIEWS[:3])
     reviews_block = ""
     if home_reviews:
         reviews_block = f'''<section class="band band-light"><div class="wrap">{sec_head("Kind words", "What our <em>clients say</em>", center=True)}
 <div class="reviews">{"".join(review_card(r) for r in home_reviews)}</div>
 <div class="center-row"><a class="btn btn-dark" href="reviews.html">Read more reviews {ic("arrow")}</a></div></div></section>'''
-    photos = PHOTOS[:6]
+    photos = [p for p in PHOTOS if p.get("home")][:6] or PHOTOS[:6]
     photos_block = ""
     if photos:
-        photos_block = f'''<section class="band band-light"><div class="wrap">{sec_head("Portfolio", "Real braids, <em>real clients</em>", center=True)}
-<ul class="masonry">{"".join(photo_item(p) for p in photos)}</ul>
-<div class="center-row"><a class="btn btn-dark" href="gallery.html">View all work {ic("arrow")}</a></div></div></section>'''
+        photos_block = f'''<section class="band band-light crafted" aria-labelledby="crafted-h"><div class="wrap">
+<div class="sec-head center"><p class="eyebrow">Real work by Amy</p><h2 id="crafted-h">Crafted by Amy. <em>Worn with confidence.</em></h2>
+<p class="lede">Discover the skill, precision and creativity behind every style. These are real hairstyles created by Amy for her clients.</p></div>
+<ul class="masonry masonry-home">{"".join(photo_item(p, "(max-width: 699px) 50vw, 380px") for p in photos)}</ul>
+<div class="center-row"><a class="btn btn-dark" href="gallery.html">Explore Amy’s work {ic("arrow")}</a></div></div></section>'''
     preload = f'<link rel="preload" as="image" href="{e(HERO["image"])}">' if HERO.get("image") else ""
     return head("index.html", "Amy African Hair Braiding | Braids in St. Ann & St. Louis, MO",
                 f"African hair braiding in St. Ann, MO, near St. Louis: braids, box braids, hair extensions and styling. Call {S['phone']} or request an appointment online.",
@@ -477,12 +500,13 @@ def page_home():
   </div>
 </section>
 
+{photos_block}
+
 <section class="why" aria-label="Why choose Amy">
   <ul class="wrap why-list">{"".join(f'<li><strong>{e(t)}</strong><span>{e(d)}</span></li>' for t, d in why)}</ul>
 </section>
 
 {video_showcase(home=True)}
-{photos_block}
 {reviews_block}
 {boutique_section()}
 {booking_cta()}
@@ -525,16 +549,25 @@ def page_services():
 ''' + foot()
 
 
+CAT_ORDER = ["Box Braids", "Feed-In Braids / Cornrows", "Boho & Goddess-Inspired Braids", "Twists & Curly Styles", "Other Braiding Styles"]
+
+
 def page_gallery():
     photos_html = ""
     if PHOTOS:
-        styles = sorted({p.get("style") for p in PHOTOS if p.get("style")})
+        styles = sorted({p.get("style") for p in PHOTOS if p.get("style")}, key=lambda c: CAT_ORDER.index(c) if c in CAT_ORDER else 99)
         filt = ('<div class="filters" role="group" aria-label="Filter photos by style" data-filter-group="gal">'
                 '<button type="button" class="chip" aria-pressed="true" data-filter="all">All</button>'
-                + "".join(f'<button type="button" class="chip" aria-pressed="false" data-filter="{e(s)}">{e(s)}</button>' for s in styles)
+                + "".join(f'<button type="button" class="chip" aria-pressed="false" data-filter="{e(c)}">{e(c)}</button>' for c in styles)
                 + "</div>") if len(styles) > 1 else ""
-        photos_html = f'''<section class="band band-light"><div class="wrap">{sec_head("Photos", "Styles from <em>the salon</em>", center=True)}
-{filt}<ul class="masonry" data-filter-target="gal">{"".join(photo_item(p) for p in PHOTOS)}</ul></div></section>'''
+        photos_html = f'''<section class="band band-light" id="portfolio" aria-label="Portfolio"><div class="wrap">
+<p class="real-badge">{ic("check")}<span>Real clients. Real styles. Real work by Amy.</span></p>
+{filt}<ul class="masonry" data-filter-target="gal">{"".join(photo_item(p) for p in PHOTOS)}</ul>
+<div class="love">
+  <h2>Love this look? <em>Let’s create yours.</em></h2>
+  <p>Tap “Book this look” under any photo and Amy will know which style inspired you.</p>
+  <a class="btn btn-pink" href="contact.html#book">{ic("calendar")}<span>Book your appointment</span></a>
+</div></div></section>'''
     ba_html = ""
     if BEFORE_AFTER:
         items = "".join(f'''<figure class="ba"><div class="ba-frame" data-ba style="--pos:50%">
@@ -543,13 +576,17 @@ def page_gallery():
 <span class="ba-tag ba-tag-b">Before</span><span class="ba-tag ba-tag-a">After</span></div>{f"<figcaption>{e(x.get('style'))}</figcaption>" if x.get("style") else ""}</figure>''' for x in BEFORE_AFTER)
         ba_html = f'<section class="band band-light"><div class="wrap">{sec_head("Transformations", "Before <em>& after</em>", center=True)}<div class="ba-grid">{items}</div></div></section>'
     lb = ('<div class="lightbox" data-lb hidden role="dialog" aria-modal="true" aria-label="Photo viewer">'
-          f'<button type="button" class="lb-close" data-lb-close aria-label="Close">{ic("close")}</button><img alt="" data-lb-img></div>') if PHOTOS else ""
-    return head("gallery.html", "Our Work: Braiding Videos & Photos | Amy African Hair Braiding, St. Ann",
-                "Real braiding work by Amy African Hair Braiding And Boutique in St. Ann, MO: videos from her Instagram and TikTok.") + page_hero(
-        "Our work", "Real braids, <em>straight from the chair</em>",
-        "Amy shares her newest work on Instagram and TikTok. Here are her latest videos.") + f'''
-{video_showcase(home=False)}
+          f'<div class="lb-top"><span class="lb-count" data-lb-count></span><button type="button" class="lb-close" data-lb-close aria-label="Close">{ic("close")}</button></div>'
+          '<figure class="lb-fig"><img alt="" data-lb-img><figcaption><span class="lb-cap" data-lb-cap></span>'
+          f'<a class="btn btn-pink btn-sm" data-lb-book href="contact.html#book">Book this look</a></figcaption></figure>'
+          f'<button type="button" class="lb-nav lb-prev" data-lb-prev aria-label="Previous photo">{ic("left")}</button>'
+          f'<button type="button" class="lb-nav lb-next" data-lb-next aria-label="Next photo">{ic("right")}</button></div>') if PHOTOS else ""
+    return head("gallery.html", "Amy’s Work: Box Braids, Feed-Ins, Boho Braids & Twists | St. Ann, MO",
+                "Real hairstyles by Amy African Hair Braiding in St. Ann, MO: box braids, feed-in braids, boho braids and curly twists. Photos and videos of her work.") + page_hero(
+        "Portfolio", "The art of braiding. <em>The beauty of you.</em>",
+        "Every braid tells a story. Explore real hairstyles beautifully crafted by Amy, from intricate feed-in braids to flowing box braids and elegant twists.") + f'''
 {photos_html}
+{video_showcase(home=False)}
 {ba_html}
 {lb}
 {booking_cta()}

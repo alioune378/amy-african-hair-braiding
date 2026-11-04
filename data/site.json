@@ -96,11 +96,13 @@
   },
   "_draft_note": "Internal placeholders are no longer rendered on the public site. Missing content is simply hidden.",
   "hero": {
-    "image": "images/styles/box-braids-example.webp",
-    "image_width": 495,
-    "image_height": 619,
-    "image_is_example": true,
-    "alt": "Example of long box braids",
-    "_note": "Replace with a real, authorised photo of Amy's work (about 900x1125px, e.g. images/hero/amy-hero.webp) and set image_is_example to false."
+    "image": "images/gallery/box-braids-long-length-800.webp",
+    "srcset": "images/gallery/box-braids-long-length-480.webp 480w, images/gallery/box-braids-long-length-800.webp 800w",
+    "image_width": 800,
+    "image_height": 1421,
+    "image_is_example": false,
+    "position": "50% 22%",
+    "alt": "Long black box braids by Amy, side view",
+    "_note": "Amy's own work (photo 02)."
   }
 }

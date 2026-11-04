@@ -71,19 +71,49 @@
     });
   });
 
-  /* ---------- lightbox */
+  /* ---------- lightbox: swipe, arrows, keyboard; follows the active filter */
   var lb = $("[data-lb]");
   if (lb) {
-    var lbImg = $("[data-lb-img]", lb), lastFocus = null;
-    var closeLb = function () { lb.hidden = true; lbImg.removeAttribute("src"); document.body.style.overflow = ""; if (lastFocus) lastFocus.focus(); };
+    var lbImg = $("[data-lb-img]", lb), lbCap = $("[data-lb-cap]", lb), lbBook = $("[data-lb-book]", lb), lbCount = $("[data-lb-count]", lb);
+    var list = [], idx = 0, lastFocus = null, sx = null, sy = null;
+    var show = function (i) {
+      idx = (i + list.length) % list.length;
+      var b = list[idx];
+      lbImg.src = b.getAttribute("data-lightbox"); lbImg.alt = b.getAttribute("data-alt") || "";
+      lbCap.textContent = (b.getAttribute("data-alt") || "") + (b.getAttribute("data-cap") ? " · " + b.getAttribute("data-cap") : "");
+      var link = b.getAttribute("data-book"); lbBook.hidden = !link; if (link) lbBook.href = link;
+      lbCount.textContent = (idx + 1) + " / " + list.length;
+    };
+    var closeLb = function () { lb.hidden = true; lbImg.removeAttribute("src"); document.body.style.overflow = ""; document.body.classList.remove("lb-open"); if (lastFocus) lastFocus.focus(); };
     $$("[data-lightbox]").forEach(function (btn) {
       btn.addEventListener("click", function () {
-        lastFocus = btn; lbImg.src = btn.getAttribute("data-lightbox"); lbImg.alt = btn.getAttribute("data-alt") || "";
-        lb.hidden = false; document.body.style.overflow = "hidden"; $("[data-lb-close]", lb).focus();
+        document.body.classList.add("lb-open");
+        list = $$("[data-lightbox]").filter(function (x) { var li = x.closest("[data-cat]"); return !(li && li.hidden); });
+        lastFocus = btn; lb.hidden = false; document.body.style.overflow = "hidden";
+        show(list.indexOf(btn)); $("[data-lb-close]", lb).focus();
       });
     });
+    $("[data-lb-prev]", lb).addEventListener("click", function () { show(idx - 1); });
+    $("[data-lb-next]", lb).addEventListener("click", function () { show(idx + 1); });
     lb.addEventListener("click", function (ev) { if (ev.target === lb || ev.target.closest("[data-lb-close]")) closeLb(); });
-    document.addEventListener("keydown", function (ev) { if (ev.key === "Escape" && !lb.hidden) closeLb(); });
+    lb.addEventListener("touchstart", function (ev) { sx = ev.touches[0].clientX; sy = ev.touches[0].clientY; }, { passive: true });
+    lb.addEventListener("touchend", function (ev) {
+      if (sx === null) return;
+      var dx = ev.changedTouches[0].clientX - sx, dy = ev.changedTouches[0].clientY - sy; sx = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) show(idx + (dx < 0 ? 1 : -1));
+      else if (dy > 90) closeLb();
+    });
+    document.addEventListener("keydown", function (ev) {
+      if (lb.hidden) return;
+      if (ev.key === "Escape") closeLb();
+      else if (ev.key === "ArrowRight") show(idx + 1);
+      else if (ev.key === "ArrowLeft") show(idx - 1);
+      else if (ev.key === "Tab") {
+        var f = $$("button, a:not([hidden])", lb), first = f[0], last = f[f.length - 1];
+        if (ev.shiftKey && document.activeElement === first) { ev.preventDefault(); last.focus(); }
+        else if (!ev.shiftKey && document.activeElement === last) { ev.preventDefault(); first.focus(); }
+      }
+    });
   }
   $$("[data-ba]").forEach(function (frame) {
     var range = $(".ba-range", frame);
@@ -207,6 +237,8 @@
     var params = new URLSearchParams(location.search);
     var style = params.get("style"), sel = $("#b-style", form);
     if (style && sel && $$("option", sel).some(function (o) { return o.value === style; })) sel.value = style;
+    var look = params.get("look"), det = $("#b-details", form);
+    if (look && det && !det.value) det.value = "Inspired by this photo on your website: " + look.slice(0, 160);
     var d = $("#b-date", form);
     if (d) { var t = new Date(); t.setMinutes(t.getMinutes() - t.getTimezoneOffset()); d.min = t.toISOString().slice(0, 10); }
     var msg = $("[data-msg]", form), btn = $("[data-submit]", form);

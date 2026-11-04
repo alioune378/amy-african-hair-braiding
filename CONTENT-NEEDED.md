@@ -2,10 +2,13 @@
 
 The site shows only confirmed information. Anything missing is hidden, never filled with placeholder text.
 
-1. **Real photos of her work**, with client permission where faces show:
-   - A hero photo (portrait, about 900×1125 px). Set it in `data/site.json` → `hero.image`, with `image_is_example: false`.
-   - One photo per service (`data/services.json` → `image`, and empty `image_label`).
-   - 6–12 portfolio photos (`data/gallery.json`). Real before/after pairs are optional.
+0. **Check the year the salon opened.** The site says "since 2010", taken from an earlier note about the salon sign. But the wall sign in Amy's new photos reads **"EST 2019"**. Confirm the correct year and update `established` in `data/site.json`.
+
+1. **Real photos:** 16 of Amy's photos are now live. Still needed, with client permission where faces show:
+   - A photo for **Hairstyling** (updos and buns). The card currently has no picture rather than an unrelated one.
+   - Cleaner replacements for two photos held back: `11_Feeding_Braids_Alternate_Closeup` (it has app icons and a pixelated band across the face) and `17_Curly_Twist_Braids_Portrait` (motion blur).
+   - Optional: higher-quality versions of photos 12–18. They are video stills and slightly soft.
+   - Confirm the name she uses for the curly twist style (passion twists, spring twists, …). It's shown as "Curly Twists".
 2. **TikTok full links.** Open each video, then Share → Copy link, and paste it in a browser so the address shows `/video/<number>`. Put the number in `data/tiktoks.json` → `video_id`. With it, the player loads reliably and the build can fetch the cover image.
 3. **Instagram cover images (optional):** a screenshot of each Reel's first frame, set as `poster` in `data/reels.json`. Without one, the card shows the branded play cover.
 4. **Hours** (`data/site.json` → `hours`). Until then the site says "Please call to confirm today's hours".
