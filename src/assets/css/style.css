@@ -28,7 +28,7 @@
   --sans: "Jost", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --wrap: 1180px;
   --gutter: clamp(16px, 5vw, 40px);
-  --head-h: 64px;
+  --head-h: 80px;
   --mbar-h: 0px;
   --r: 14px;
 }
@@ -105,7 +105,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 @supports (backdrop-filter: blur(10px)) { .site-head { background: rgba(18, 10, 16, .86); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); } }
 .head-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; height: var(--head-h); }
 .brand { display: block; flex: none; }
-.brand img { height: 54px; width: auto; }
+.brand img { height: 70px; width: auto; }
 .nav-desk { display: none; }
 .nav-desk ul { display: flex; gap: 26px; }
 .nav-desk a { color: var(--on-dark-soft); text-decoration: none; font-size: .92rem; padding: 10px 0; position: relative; }
@@ -117,14 +117,14 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .menu-btn { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; color: var(--on-dark); border: 1px solid var(--line-dark); }
 .menu-btn .ic { width: 22px; height: 22px; }
 @media (min-width: 720px) { .head-tel { display: inline-flex; } }
-@media (min-width: 1040px) { .nav-desk { display: block; } .menu-btn { display: none; } :root { --head-h: 74px; } .brand img { height: 62px; } }
+@media (min-width: 1040px) { .nav-desk { display: block; } .menu-btn { display: none; } :root { --head-h: 96px; } .brand img { height: 86px; } }
 
 /* mobile menu: full-screen overlay above everything */
 .menu { position: fixed; inset: 0; z-index: 200; background: var(--black); color: var(--on-dark); display: flex; flex-direction: column; gap: 22px;
   padding: calc(10px + env(safe-area-inset-top, 0px)) var(--gutter) calc(24px + env(safe-area-inset-bottom, 0px)); overflow-y: auto; overscroll-behavior: contain; }
 .menu[hidden] { display: none; }
 .menu-top { display: flex; justify-content: space-between; align-items: center; min-height: var(--head-h); }
-.menu-logo { height: 54px; width: auto; }
+.menu-logo { height: 70px; width: auto; }
 .menu-close { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--line-dark); }
 .menu-close .ic { width: 22px; height: 22px; }
 .menu-list { border-top: 1px solid var(--line-dark); }
@@ -367,7 +367,7 @@ body.menu-open { overflow: hidden; }
 /* ============================================================ FOOTER */
 .site-foot { background: var(--black); color: var(--on-dark-soft); padding: 56px 0 calc(28px + var(--mbar-h)); border-top: 1px solid var(--line-dark); }
 .foot-grid { display: grid; gap: 28px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
-.foot-brand img { width: 150px; height: auto; }
+.foot-brand img { width: 180px; height: auto; }
 .foot-est { margin-top: 10px; font-size: .9rem; }
 .foot-h { font: 500 .78rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--gold-hi); margin-bottom: 14px; }
 .site-foot address { font-style: normal; }

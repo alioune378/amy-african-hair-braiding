@@ -142,7 +142,7 @@ def header(page):
     return f'''<header class="site-head" data-head>
   <div class="wrap head-row">
     <a class="brand" href="index.html" aria-label="{e(S["name"])}, home">
-      <img src="images/logo/amy-wordmark-160.webp" srcset="images/logo/amy-wordmark-160.webp 160w, images/logo/amy-wordmark-320.webp 320w, images/logo/amy-wordmark-480.webp 480w" sizes="(min-width: 1040px) 82px, 72px" width="160" height="121" alt="{e(S["name"])} logo">
+      <img src="images/logo/amy-logo-bright-120.webp" srcset="images/logo/amy-logo-bright-120.webp 120w, images/logo/amy-logo-bright-240.webp 240w" sizes="(min-width: 1040px) 68px, 56px" width="120" height="151" alt="{e(S["name"])} logo">
     </a>
     <nav class="nav-desk" aria-label="Main">
       <ul>{links}</ul>
@@ -158,7 +158,7 @@ def header(page):
 </header>
 <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden data-menu>
   <div class="menu-top">
-    <img src="images/logo/amy-wordmark-160.webp" srcset="images/logo/amy-wordmark-160.webp 160w, images/logo/amy-wordmark-320.webp 320w" sizes="72px" width="160" height="121" alt="" class="menu-logo">
+    <img src="images/logo/amy-logo-bright-120.webp" srcset="images/logo/amy-logo-bright-120.webp 120w, images/logo/amy-logo-bright-240.webp 240w" sizes="56px" width="120" height="151" alt="" class="menu-logo">
     <button class="menu-close" type="button" data-menu-close>{ic("close")}<span class="sr">Close menu</span></button>
   </div>
   <nav aria-label="Main"><ul class="menu-list">{links}</ul></nav>
@@ -178,7 +178,7 @@ def foot():
 <footer class="site-foot" data-foot>
   <div class="wrap foot-grid">
     <div class="foot-brand">
-      <img src="images/logo/amy-logo-primary-300.webp" srcset="images/logo/amy-logo-primary-300.webp 300w, images/logo/amy-logo-primary-600.webp 600w" sizes="150px" width="300" height="411" alt="{e(S["name"])} logo" loading="lazy">
+      <img src="images/logo/amy-logo-bright-360.webp" srcset="images/logo/amy-logo-bright-360.webp 360w, images/logo/amy-logo-bright-600.webp 600w" sizes="180px" width="360" height="454" alt="{e(S["name"])} logo" loading="lazy">
       {f'<p class="foot-est">African hair braiding in St. Ann since {e(EST)}</p>' if EST else ""}
     </div>
     <div>
