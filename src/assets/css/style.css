@@ -1,4 +1,4 @@
-/* Amy African Hair Braiding And Boutique — design system
+/* Amy African Hair Braiding & Boutique — design system
    Burgundy, hot pink, black and gold, used with restraint: one gold line, one pink action.
    Editorial serif (Cormorant Garamond) + clean sans (Jost). Mobile first. */
 
@@ -138,27 +138,38 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 body.menu-open { overflow: hidden; }
 
 /* ============================================================ HERO */
-.hero { background: var(--black); color: var(--on-dark); padding: clamp(28px, 6vw, 72px) 0 clamp(36px, 7vw, 88px); position: relative; overflow: hidden; }
-.hero::before { content: ""; position: absolute; inset: auto -30% -40% auto; width: 80vw; height: 80vw; max-width: 760px; max-height: 760px; border-radius: 50%; background: radial-gradient(closest-side, rgba(209, 8, 111, .22), transparent); pointer-events: none; }
-.hero-grid { position: relative; display: grid; gap: 30px; align-items: center; }
+.hero { background: var(--black); color: var(--on-dark); padding: clamp(26px, 5vw, 64px) 0 clamp(40px, 6vw, 80px); position: relative; overflow: hidden; }
+.hero::before { content: ""; position: absolute; inset: auto -30% -40% auto; width: 80vw; height: 80vw; max-width: 760px; max-height: 760px; border-radius: 50%; background: radial-gradient(closest-side, rgba(209, 8, 111, .24), transparent); pointer-events: none; }
+.hero::after { content: ""; position: absolute; top: -20%; left: -25%; width: 60vw; height: 60vw; max-width: 560px; max-height: 560px; border-radius: 50%; background: radial-gradient(closest-side, rgba(212, 175, 55, .08), transparent); pointer-events: none; }
+.hero-grid { position: relative; z-index: 1; display: grid; gap: 30px; align-items: center; }
 .hero .eyebrow { color: var(--gold-hi); }
 .hero .eyebrow .ic { display: inline-block; width: 14px; height: 14px; }
 .hero .eyebrow::before { display: none; }
-.hero h1 { font-size: clamp(2.9rem, 13vw, 5.6rem); line-height: .98; }
+.hero h1 { font-size: clamp(2.7rem, 11.5vw, 5.4rem); line-height: .96; letter-spacing: -.015em; }
+.hero h1 span, .hero h1 em { display: block; }
 .hero h1 em { color: var(--pink-soft); }
-.hero-lede { color: var(--on-dark-soft); font-size: 1.08rem; max-width: 40ch; margin-top: 14px; }
+.hero-lede { color: var(--on-dark-soft); font-size: 1.06rem; max-width: 44ch; margin-top: 16px; }
 .hero .btn-row { margin-top: 20px; }
-.hero .btn-row .btn { flex: 1 1 160px; }
-.hero-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; color: var(--gold-hi); text-decoration: none; font-size: .95rem; min-height: 40px; }
-.hero-link:hover { text-decoration: underline; }
-.hero-media { position: relative; margin: 0; justify-self: center; width: min(78vw, 360px); }
-.hero-media img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 200px 200px 16px 16px; border: 1px solid var(--line-dark); }
+.hero .btn-row .btn { flex: 1 1 170px; }
+.hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 16px 0 0; font-size: .92rem; color: var(--on-dark-soft); }
+.hero-meta a { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; color: var(--on-dark); text-decoration: none; }
+.hero-meta a:hover { color: var(--gold-hi); }
+.hero-meta .ic { color: var(--gold); width: 16px; height: 16px; }
+.hero-dot { color: var(--gold); }
+.hero-media { position: relative; margin: 0; justify-self: center; width: min(86vw, 400px); }
+/* arch portrait with an offset gold hairline, echoing the Meet Amy frame */
+.hero-media::before { content: ""; position: absolute; top: 14px; left: 14px; right: -14px; bottom: -14px; border: 1px solid rgba(212, 175, 55, .5); border-radius: 220px 220px 20px 20px; pointer-events: none; }
+.hero-arch { position: relative; border-radius: 220px 220px 18px 18px; overflow: hidden; border: 1px solid rgba(236, 210, 131, .55); background: var(--ink-2);
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, .95), 0 0 0 6px rgba(18, 10, 16, .6); }
+.hero-arch img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; }
 .hero-media .tag-example { left: 50%; transform: translateX(-50%); bottom: 12px; }
 @media (min-width: 860px) {
-  .hero-grid { grid-template-columns: 1.15fr .85fr; gap: 56px; }
-  .hero-media { width: 100%; max-width: 400px; justify-self: end; }
+  .hero-grid { grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); gap: clamp(48px, 6vw, 88px); }
+  .hero-media { width: 100%; max-width: 470px; justify-self: end; margin-right: 14px; }
+  .hero-arch img { aspect-ratio: 3 / 4; }
   .hero .btn-row .btn { flex: 0 0 auto; }
 }
+@media (min-width: 1100px) { .hero h1 { font-size: 5.8rem; } }
 
 /* ============================================================ MEET AMY — owner introduction with her salon footage */
 .meet { position: relative; overflow: hidden; color: var(--on-dark); padding: clamp(64px, 10vw, 120px) 0;
@@ -175,8 +186,7 @@ body.menu-open { overflow: hidden; }
 .meet-rule { display: block; width: 56px; height: 1px; background: linear-gradient(90deg, var(--gold), var(--gold-hi)); transform-origin: left center; }
 .meet-title { font-size: clamp(3rem, 12vw, 5rem); line-height: .95; letter-spacing: -.015em; }
 .meet-title em { color: var(--pink-soft); }
-.meet-sub { margin: 16px 0 0; font: italic 500 clamp(1.3rem, 4.6vw, 1.6rem)/1.3 var(--display); color: var(--gold-hi); }
-.meet-nb { display: inline-block; }
+.meet-sub { display: block; margin: 16px 0 0; font: italic 500 clamp(1.45rem, 5vw, 2rem)/1.2 var(--display); letter-spacing: 0; color: var(--gold-hi); }
 
 .meet-film { position: relative; margin: 0; justify-self: center; width: min(76vw, 320px); }
 /* offset hairline frame behind the footage */
@@ -250,6 +260,8 @@ body.menu-open { overflow: hidden; }
 .svc { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
 .svc-media { position: relative; aspect-ratio: 4 / 5; background: var(--blush); }
 .svc-media img { width: 100%; height: 100%; object-fit: cover; }
+.svc-media-brand { display: grid; place-items: center; background: radial-gradient(circle at 50% 40%, var(--burgundy), var(--ink) 75%); }
+.svc-media-brand img { width: 46%; height: auto; object-fit: contain; opacity: .92; }
 .svc-body { display: flex; flex-direction: column; gap: 8px; padding: 18px 18px 20px; flex: 1; }
 .svc-body h3 { font-size: 1.65rem; }
 .svc-body p { margin: 0; color: var(--text-soft); font-size: .95rem; }
@@ -294,6 +306,28 @@ body.menu-open { overflow: hidden; }
 .reel-cap a { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; font-size: .85rem; color: var(--gold-hi); text-decoration: none; }
 .reel-cap a .ic { width: 14px; height: 14px; }
 #videos .btn-row { margin-top: 18px; }
+.film-feature { display: grid; gap: 28px; margin-bottom: clamp(44px, 7vw, 72px); }
+.film-card { position: relative; margin: 0; justify-self: center; width: min(74vw, 320px); }
+.film-card::before { content: ""; position: absolute; top: 14px; left: 14px; right: -14px; bottom: -14px; border: 1px solid rgba(212, 175, 55, .42); border-radius: 22px; pointer-events: none; }
+.film-frame { position: relative; aspect-ratio: 464 / 832; border-radius: 18px; overflow: hidden; background: var(--ink-2); border: 1px solid rgba(236, 210, 131, .55);
+  box-shadow: 0 34px 70px -34px rgba(0, 0, 0, .9); }
+.film-frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: #000; }
+.film-play { position: absolute; inset: 0; display: grid; place-items: center; width: 100%; background: linear-gradient(180deg, transparent 55%, rgba(18, 10, 16, .55)); }
+.film-play[hidden], .film-frame.was-played .film-play { display: none; }
+.film-play .reel-play { width: 74px; height: 74px; }
+.film-play:hover .reel-play, .film-play:focus-visible .reel-play { background: rgba(209, 8, 111, .85); border-color: #fff; }
+.film-play:hover .reel-play .ic, .film-play:focus-visible .reel-play .ic { color: #fff; }
+.film-copy h3 { font-size: clamp(2rem, 6vw, 2.8rem); }
+.film-copy h3 em { color: var(--gold-hi); font-style: italic; font-weight: 500; }
+.film-copy p:not(.eyebrow) { color: var(--on-dark-soft); max-width: 42ch; margin-top: 12px; }
+.film-copy .eyebrow { color: var(--gold-hi); }
+@media (min-width: 900px) {
+  .film-feature { grid-template-columns: auto minmax(0, 1fr); gap: clamp(56px, 8vw, 110px); align-items: center; }
+  .film-card { width: 320px; margin-right: 14px; }
+}
+.social-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 18px; }
+.social-h { font-size: clamp(1.6rem, 4.6vw, 2.2rem); }
+.social-h em { font-style: italic; font-weight: 500; color: var(--gold-hi); }
 
 /* ============================================================ PHOTOS — Amy's portfolio */
 .masonry { columns: 2; column-gap: 12px; }
@@ -318,7 +352,7 @@ body.menu-open { overflow: hidden; }
 .love h2 { font-size: clamp(2rem, 6vw, 3rem); }
 .love h2 em { color: var(--gold-hi); }
 .love p { color: var(--on-dark-soft); margin: 10px auto 18px; max-width: 46ch; }
-.hero-cap { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); padding: 4px 12px; border-radius: 999px; background: rgba(18, 10, 16, .65); color: #fff; font-size: .74rem; letter-spacing: .08em; white-space: nowrap; }
+.hero-cap { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); padding: 5px 14px; border-radius: 999px; background: rgba(18, 10, 16, .72); border: 1px solid rgba(236, 210, 131, .35); color: #fff; font-size: .74rem; letter-spacing: .1em; white-space: nowrap; }
 
 .lightbox { position: fixed; inset: 0; z-index: 250; background: rgba(18, 10, 16, .97); color: #fff; display: grid; grid-template-rows: auto minmax(0, 1fr);
   padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px); touch-action: pan-y; }
@@ -365,6 +399,27 @@ body.menu-open { overflow: hidden; }
 .bq-item h3 { font-size: 1.3rem; margin-top: 8px; }
 .bq-item p { font-size: .88rem; color: var(--on-dark-soft); }
 @media (min-width: 900px) { .bq-in { grid-template-columns: .9fr 1.1fr; align-items: center; gap: 56px; } .bq-in > div:only-child { max-width: 640px; } }
+
+/* ============================================================ VISIT AMY'S SALON (real storefront) */
+.visit-grid { display: grid; gap: 34px; align-items: center; }
+.visit-photo { position: relative; margin: 0; justify-self: center; width: min(88vw, 460px); }
+.visit-photo::before { content: ""; position: absolute; top: 14px; left: -14px; right: 14px; bottom: -14px; border: 1px solid rgba(212, 175, 55, .6); border-radius: 22px; pointer-events: none; }
+.visit-photo img { position: relative; width: 100%; height: auto; aspect-ratio: 1122 / 1402; object-fit: cover; border-radius: 18px; box-shadow: 0 30px 60px -36px rgba(18, 10, 16, .65); }
+.visit-copy h2 { font-size: clamp(2.3rem, 7.5vw, 3.6rem); }
+.visit-copy .lede { margin-top: 12px; }
+.visit-addr { display: grid; gap: 2px; margin: 22px 0 0; padding: 18px 20px; font-style: normal; background: #fff; border: 1px solid var(--line); border-left: 3px solid var(--gold); border-radius: 12px; }
+.visit-addr strong { font: 600 1.35rem/1.2 var(--display); color: var(--text); }
+.visit-hours { display: flex; align-items: center; gap: 10px; margin: 14px 0 0; font-size: .94rem; color: var(--text-soft); }
+.visit-hours .ic { color: var(--gold); }
+.visit-actions { display: grid; gap: 10px; margin-top: 22px; }
+.visit-alt { margin: 12px 0 0; font-size: .92rem; color: var(--text-soft); }
+.visit-alt a { color: var(--burgundy); font-weight: 500; }
+@media (min-width: 560px) { .visit-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); } .visit-actions .btn-pink { grid-column: 1 / -1; } }
+@media (min-width: 860px) {
+  .visit-grid { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(48px, 7vw, 96px); }
+  .visit-photo { width: 100%; max-width: 470px; justify-self: start; margin-left: 14px; }
+}
+.visit-store { width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: 50% 12%; border-radius: 10px; margin-bottom: 18px; border: 1px solid var(--line-dark); }
 
 /* ============================================================ CTA */
 .cta-in { text-align: center; }
@@ -450,25 +505,27 @@ body.menu-open { overflow: hidden; }
 .foot-links li a { display: inline-flex; min-height: 36px; align-items: center; }
 .site-foot .hours li { border-color: var(--line-dark); }
 .foot-base { margin-top: 32px; padding-top: 18px; border-top: 1px solid var(--line-dark); font-size: .84rem; }
+.foot-base p { margin: 0; }
+.foot-credit { margin-top: 8px !important; font-size: .78rem; letter-spacing: .06em; color: rgba(236, 210, 131, .82); }
+.site-foot .foot-credit a { color: var(--gold-hi); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(236, 210, 131, .4); }
 .site-foot .muted { color: var(--on-dark-soft); }
 
 /* ============================================================ MOBILE BOOKING BAR
    Two actions only. Hidden at the top, over the booking form, over the footer, and while
    a video is playing; padding is added at the bottom of the page so nothing is ever covered. */
 .mbar { position: fixed; z-index: 90; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: auto 1fr; gap: 8px;
-  padding: 8px max(12px, env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
+  padding: 6px max(10px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(10px, env(safe-area-inset-left, 0px));
   background: rgba(18, 10, 16, .97); border-top: 1px solid var(--line-dark); transform: translateY(110%); visibility: hidden; transition: transform .3s ease, visibility 0s linear .3s; }
 .mbar.is-on { transform: none; visibility: visible; transition: transform .3s ease; }
-.mbar a { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 18px; border-radius: 999px; text-decoration: none; font-weight: 500; }
+.mbar a { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 999px; text-decoration: none; font-weight: 500; font-size: .95rem; }
 .mbar-call { color: var(--on-dark); border: 1px solid var(--line-dark); }
 .mbar-book { background: var(--pink); color: #fff; }
-@media (max-width: 1039px) { body { --mbar-h: calc(62px + env(safe-area-inset-bottom, 0px)); } }
+@media (max-width: 1039px) { body { --mbar-h: calc(56px + env(safe-area-inset-bottom, 0px)); } }
 @media (min-width: 1040px) { .mbar { display: none; } }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
 @media (max-width: 439px) {
-  .hero .btn-row .btn { padding-inline: 14px; gap: 8px; white-space: nowrap; }
-  .hero .btn-row .btn .ic { display: none; }
+  .hero .btn-row .btn { padding-inline: 14px; gap: 8px; white-space: nowrap; flex-basis: 100%; }
 }
 
 body.lb-open .mbar, body.menu-open .mbar { visibility: hidden; }

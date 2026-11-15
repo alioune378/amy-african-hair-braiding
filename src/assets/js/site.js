@@ -1,4 +1,4 @@
-/* Amy African Hair Braiding And Boutique — interactions (no dependencies) */
+/* Amy African Hair Braiding & Boutique — interactions (no dependencies) */
 (function () {
   "use strict";
   document.documentElement.classList.add("js");
@@ -37,7 +37,7 @@
     var update = function () {
       var vh = window.innerHeight, show = window.scrollY > vh * 0.6;
       hide.forEach(function (el) { var r = el.getBoundingClientRect(); if (r.top < vh && r.bottom > 0) show = false; });
-      $$(".reel.is-embedded .reel-frame").forEach(function (el) { var r = el.getBoundingClientRect(); if (r.bottom > vh - 90 && r.top < vh) show = false; });
+      $$(".reel.is-embedded .reel-frame, [data-showcase].is-playing").forEach(function (el) { var r = el.getBoundingClientRect(); if (r.bottom > vh - 90 && r.top < vh) show = false; });
       bar.classList.toggle("is-on", show);
       bar.setAttribute("aria-hidden", String(!show));
       $$("a", bar).forEach(function (a) { a.tabIndex = show ? 0 : -1; });
@@ -230,6 +230,19 @@
     if (ev.target.tagName !== "VIDEO") return;
     $$("video").forEach(function (v) { if (v !== ev.target && !v.paused) v.pause(); });
   }, true);
+  var otherPlaying = function (self) { return $$("video").some(function (v) { return v !== self && !v.paused && !v.ended; }); };
+
+  /* ---------- salon film: tap to play (with sound). Nothing downloads before that; native controls stay. */
+  var sc = $("[data-showcase]");
+  if (sc) {
+    var sv = $("[data-showcase-video]", sc), sp = $("[data-showcase-play]", sc);
+    sp.hidden = false;
+    sc.classList.add("has-overlay");
+    sp.addEventListener("click", function () { var r = sv.play(); if (r && r.catch) r.catch(function () {}); });
+    sv.addEventListener("play", function () { sc.classList.add("is-playing", "was-played"); });
+    sv.addEventListener("pause", function () { sc.classList.remove("is-playing"); });
+    sv.addEventListener("ended", function () { sc.classList.remove("is-playing"); });
+  }
 
   /* ---------- booking form */
   var form = $("[data-book]");
@@ -244,7 +257,7 @@
     var msg = $("[data-msg]", form), btn = $("[data-submit]", form);
     var setMsg = function (text, kind) { msg.textContent = text; msg.className = "form-msg" + (kind ? " " + kind : ""); };
     var MAX = 8 * 1024 * 1024;
-    var MSG = { name: "Please enter your name.", phone: "Please enter a phone number we can call or text.", style: "Please choose a hairstyle.",
+    var MSG = { name: "Please enter your name.", phone: "Please enter a phone number we can call or text.", style: "Please choose a hairstyle.", email: "Please check your email address, or leave it empty.",
       date: "Please choose a date from today onwards.", time: "Please choose a time of day." };
     var setErr = function (f, text) {
       f.setAttribute("aria-invalid", text ? "true" : "false");
@@ -336,7 +349,7 @@
       if (document.readyState === "complete") watchNear(); else window.addEventListener("load", watchNear);
       new IntersectionObserver(function (es) {
         onScreen = es[0].isIntersecting && es[0].intersectionRatio >= 0.35;
-        if (onScreen) { if (autoOK() && !userPaused && fv.paused) playFilm(); }
+        if (onScreen) { if (autoOK() && !userPaused && fv.paused && !otherPlaying(fv)) playFilm(); }
         else if (!fv.paused) fv.pause();
       }, { threshold: [0, 0.35, 0.6] }).observe(film);
     } else if (autoOK()) {

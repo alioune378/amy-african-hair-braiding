@@ -2,24 +2,24 @@
   "_help": [
     "Real photos of Amy's work only. Files live in src/images/gallery/ (responsive WebP + JPG made from the originals in originals/).",
     "style is the portfolio category; book_as is the service preselected when a visitor taps 'Book this look'. home: true shows it on the homepage (6 recommended).",
-    "Held back (not shown): 11_Feeding_Braids_Alternate_Closeup.jpg (app icons and a pixelated band over the face) and 17_Curly_Twist_Braids_Portrait.jpg (motion blur)."
+    "Held back (not shown): 11_Feeding_Braids_Alternate_Closeup.jpg (app icons and a pixelated band over the face), 17_Curly_Twist_Braids_Portrait.jpg (motion blur), 12_Highlighted_Micro_Braids_Top.jpg (soft video still, covered by the profile and back views), 18_Curly_Twist_Braids_Stylist.jpg (third near-identical frame of the same twists), and Nov 2026 photo 04_black_braids_front.jpg (same client and look as 02)."
   ],
   "photos": [
     {
-      "src": "images/gallery/box-braids-long-length.jpg",
-      "base": "images/gallery/box-braids-long-length",
+      "src": "images/gallery/black-boho-braids-side-glasses.jpg",
+      "base": "images/gallery/black-boho-braids-side-glasses",
       "widths": [
         480,
         800,
-        941
+        900
       ],
-      "width": 941,
-      "height": 1672,
-      "style": "Box Braids",
-      "book_as": "Box Braids",
-      "alt": "Long black box braids reaching past the waist, side view",
+      "width": 900,
+      "height": 1600,
+      "style": "Boho & Goddess-Inspired Braids",
+      "book_as": "Bohemian Braids",
+      "alt": "Long black bohemian braids with curly ends, side view showing fine, even parts",
       "home": true,
-      "source_file": "02_Black_Box_Braids_Long_Length.jpg"
+      "source_file": "Nov 2026 pack: 02_black_micro_braids_side.jpg"
     },
     {
       "src": "images/gallery/feed-in-braids-closeup.jpg",
@@ -38,8 +38,8 @@
       "source_file": "09_Feeding_Braids_Closeup.jpg"
     },
     {
-      "src": "images/gallery/blonde-boho-braids-back.jpg",
-      "base": "images/gallery/blonde-boho-braids-back",
+      "src": "images/gallery/box-braids-long-length.jpg",
+      "base": "images/gallery/box-braids-long-length",
       "widths": [
         480,
         800,
@@ -47,11 +47,27 @@
       ],
       "width": 941,
       "height": 1672,
+      "style": "Box Braids",
+      "book_as": "Box Braids",
+      "alt": "Long black box braids reaching past the waist, side view",
+      "home": true,
+      "source_file": "02_Black_Box_Braids_Long_Length.jpg"
+    },
+    {
+      "src": "images/gallery/honey-blonde-boho-braids-back.jpg",
+      "base": "images/gallery/honey-blonde-boho-braids-back",
+      "widths": [
+        480,
+        800,
+        900
+      ],
+      "width": 900,
+      "height": 1600,
       "style": "Boho & Goddess-Inspired Braids",
       "book_as": "Bohemian Braids",
-      "alt": "Blonde boho braids with loose curls, back view",
+      "alt": "Honey blonde bohemian braids with loose curls, back view",
       "home": true,
-      "source_file": "05_Blonde_Boho_Braids_Back.jpg"
+      "source_file": "Nov 2026 pack: 01_honey_blonde_boho_braids_back.jpg"
     },
     {
       "src": "images/gallery/feed-in-braids-back.jpg",
@@ -70,6 +86,54 @@
       "source_file": "07_Feeding_Braids_Back.jpg"
     },
     {
+      "src": "images/gallery/black-boho-braids-back.jpg",
+      "base": "images/gallery/black-boho-braids-back",
+      "widths": [
+        480,
+        800,
+        900
+      ],
+      "width": 900,
+      "height": 1600,
+      "style": "Boho & Goddess-Inspired Braids",
+      "book_as": "Bohemian Braids",
+      "alt": "Waist-length black bohemian braids with curls throughout, back view",
+      "home": true,
+      "source_file": "Nov 2026 pack: 03_black_boho_braids_back.jpg"
+    },
+    {
+      "src": "images/gallery/black-boho-braids-front.jpg",
+      "base": "images/gallery/black-boho-braids-front",
+      "widths": [
+        480,
+        800,
+        900
+      ],
+      "width": 900,
+      "height": 1600,
+      "style": "Boho & Goddess-Inspired Braids",
+      "book_as": "Bohemian Braids",
+      "alt": "Long black bohemian braids with loose curls, front view",
+      "home": false,
+      "source_file": "Nov 2026 pack: 06_black_braids_front_full.jpg"
+    },
+    {
+      "src": "images/gallery/blonde-boho-braids-back.jpg",
+      "base": "images/gallery/blonde-boho-braids-back",
+      "widths": [
+        480,
+        800,
+        941
+      ],
+      "width": 941,
+      "height": 1672,
+      "style": "Boho & Goddess-Inspired Braids",
+      "book_as": "Bohemian Braids",
+      "alt": "Blonde boho braids with loose curls, back view",
+      "home": false,
+      "source_file": "05_Blonde_Boho_Braids_Back.jpg"
+    },
+    {
       "src": "images/gallery/golden-boho-braids-side.jpg",
       "base": "images/gallery/golden-boho-braids-side",
       "widths": [
@@ -82,39 +146,24 @@
       "style": "Boho & Goddess-Inspired Braids",
       "book_as": "Bohemian Braids",
       "alt": "Golden boho braids with curly pieces, side view",
-      "home": true,
+      "home": false,
       "source_file": "04_Golden_Boho_Braids_Side.jpg"
     },
     {
-      "src": "images/gallery/curly-twists-front.jpg",
-      "base": "images/gallery/curly-twists-front",
-      "widths": [
-        480,
-        792
-      ],
-      "width": 792,
-      "height": 1303,
-      "style": "Twists & Curly Styles",
-      "book_as": "Curly Twists",
-      "alt": "Shoulder-length curly twists, front view",
-      "home": true,
-      "source_file": "15_Curly_Twist_Braids_Front.jpg"
-    },
-    {
-      "src": "images/gallery/box-braids-top-view.jpg",
-      "base": "images/gallery/box-braids-top-view",
+      "src": "images/gallery/black-boho-braids-parts.jpg",
+      "base": "images/gallery/black-boho-braids-parts",
       "widths": [
         480,
         800,
-        941
+        900
       ],
-      "width": 941,
-      "height": 1672,
-      "style": "Box Braids",
-      "book_as": "Box Braids",
-      "alt": "Small black box braids seen from above, showing neat square parts",
+      "width": 900,
+      "height": 1600,
+      "style": "Boho & Goddess-Inspired Braids",
+      "book_as": "Bohemian Braids",
+      "alt": "Bohemian braids seen from behind, showing clean, even parts at the crown",
       "home": false,
-      "source_file": "01_Black_Box_Braids_Top_View.jpg"
+      "source_file": "Nov 2026 pack: 05_black_boho_braids_side.jpg"
     },
     {
       "src": "images/gallery/box-braids-portrait.jpg",
@@ -133,22 +182,6 @@
       "source_file": "03_Black_Braids_Portrait.jpg"
     },
     {
-      "src": "images/gallery/golden-boho-braids-portrait.jpg",
-      "base": "images/gallery/golden-boho-braids-portrait",
-      "widths": [
-        480,
-        800,
-        941
-      ],
-      "width": 941,
-      "height": 1672,
-      "style": "Boho & Goddess-Inspired Braids",
-      "book_as": "Bohemian Braids",
-      "alt": "Golden boho braids swept to one side",
-      "home": false,
-      "source_file": "06_Golden_Braids_Portrait.jpg"
-    },
-    {
       "src": "images/gallery/feed-in-braids-top.jpg",
       "base": "images/gallery/feed-in-braids-top",
       "widths": [
@@ -163,6 +196,54 @@
       "alt": "Feed-in braids seen from above, curving into a long braided ponytail",
       "home": false,
       "source_file": "08_Feeding_Braids_Top.jpg"
+    },
+    {
+      "src": "images/gallery/side-cornrows-curly-hair.jpg",
+      "base": "images/gallery/side-cornrows-curly-hair",
+      "widths": [
+        480,
+        800,
+        900
+      ],
+      "width": 900,
+      "height": 1600,
+      "style": "Feed-In Braids / Cornrows",
+      "book_as": "Not sure yet",
+      "alt": "Side cornrows on one side with long, loose black curls",
+      "home": false,
+      "source_file": "Nov 2026 pack: 07_cornrows_curly_style.jpg"
+    },
+    {
+      "src": "images/gallery/box-braids-top-view.jpg",
+      "base": "images/gallery/box-braids-top-view",
+      "widths": [
+        480,
+        800,
+        941
+      ],
+      "width": 941,
+      "height": 1672,
+      "style": "Box Braids",
+      "book_as": "Box Braids",
+      "alt": "Small black box braids seen from above, showing neat square parts",
+      "home": false,
+      "source_file": "01_Black_Box_Braids_Top_View.jpg"
+    },
+    {
+      "src": "images/gallery/golden-boho-braids-portrait.jpg",
+      "base": "images/gallery/golden-boho-braids-portrait",
+      "widths": [
+        480,
+        800,
+        941
+      ],
+      "width": 941,
+      "height": 1672,
+      "style": "Boho & Goddess-Inspired Braids",
+      "book_as": "Bohemian Braids",
+      "alt": "Golden boho braids swept to one side",
+      "home": false,
+      "source_file": "06_Golden_Braids_Portrait.jpg"
     },
     {
       "src": "images/gallery/feed-in-braids-side.jpg",
@@ -181,6 +262,21 @@
       "source_file": "10_Feeding_Braids_Side.jpg"
     },
     {
+      "src": "images/gallery/highlighted-braids-long-back.jpg",
+      "base": "images/gallery/highlighted-braids-long-back",
+      "widths": [
+        480,
+        608
+      ],
+      "width": 608,
+      "height": 1818,
+      "style": "Box Braids",
+      "book_as": "Box Braids",
+      "alt": "Waist-length box braids with blonde highlights, back view",
+      "home": false,
+      "source_file": "13_Highlighted_Micro_Braids_Long_Back.jpg"
+    },
+    {
       "src": "images/gallery/highlighted-braids-profile.jpg",
       "base": "images/gallery/highlighted-braids-profile",
       "widths": [
@@ -197,34 +293,19 @@
       "source_file": "14_Highlighted_Micro_Braids_Profile.jpg"
     },
     {
-      "src": "images/gallery/highlighted-braids-top.jpg",
-      "base": "images/gallery/highlighted-braids-top",
+      "src": "images/gallery/curly-twists-front.jpg",
+      "base": "images/gallery/curly-twists-front",
       "widths": [
         480,
-        796
+        792
       ],
-      "width": 796,
-      "height": 1388,
-      "style": "Box Braids",
-      "book_as": "Box Braids",
-      "alt": "Small box braids with blonde highlights, top view",
+      "width": 792,
+      "height": 1303,
+      "style": "Twists & Curly Styles",
+      "book_as": "Curly Twists",
+      "alt": "Shoulder-length curly twists, front view",
       "home": false,
-      "source_file": "12_Highlighted_Micro_Braids_Top.jpg"
-    },
-    {
-      "src": "images/gallery/highlighted-braids-long-back.jpg",
-      "base": "images/gallery/highlighted-braids-long-back",
-      "widths": [
-        480,
-        608
-      ],
-      "width": 608,
-      "height": 1818,
-      "style": "Box Braids",
-      "book_as": "Box Braids",
-      "alt": "Waist-length box braids with blonde highlights, back view",
-      "home": false,
-      "source_file": "13_Highlighted_Micro_Braids_Long_Back.jpg"
+      "source_file": "15_Curly_Twist_Braids_Front.jpg"
     },
     {
       "src": "images/gallery/curly-twists-side.jpg",
@@ -241,22 +322,6 @@
       "alt": "Curly twists, side view",
       "home": false,
       "source_file": "16_Curly_Twist_Braids_Side.jpg"
-    },
-    {
-      "src": "images/gallery/curly-twists-stylist.jpg",
-      "base": "images/gallery/curly-twists-stylist",
-      "widths": [
-        480,
-        800,
-        827
-      ],
-      "width": 827,
-      "height": 1270,
-      "style": "Twists & Curly Styles",
-      "book_as": "Curly Twists",
-      "alt": "Curly twists with a defined, full shape",
-      "home": false,
-      "source_file": "18_Curly_Twist_Braids_Stylist.jpg"
     }
   ],
   "before_after": []

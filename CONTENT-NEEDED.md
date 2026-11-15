@@ -2,7 +2,10 @@
 
 The site shows only confirmed information. Anything missing is hidden, never filled with placeholder text.
 
-0. **Check the year the salon opened.** The site says "since 2010", taken from an earlier note about the salon sign. But the wall sign in Amy's new photos reads **"EST 2019"**. Confirm the correct year and update `established` in `data/site.json`.
+0. **Confirm the year the salon opened.** The wall sign reads **"EST 2019"** in the earlier photos (green light) but appears to read **"EST 2010"** in the Nov 2026 photos (red light). Until confirmed, no year is shown anywhere ("Since …" is hidden in the hero, footer, About page and Google data). Put the correct year in `established` in `data/site.json`.
+0b. **Confirm the storefront photo.** "Visit Amy's Salon" uses the retouched storefront version with the OPEN sign (`src/images/salon/`). Its sign shows (314) 249-1615 and **(314) 395-7624**. Confirm the photo is accurate, and whether 395-7624 is still active (it is not used as a contact number on the site). The version with "314-429-2823" printed twice in the window was not used: it looks like an editing artifact.
+0c. **Dalal Technologies link.** The footer credit is unlinked. Add the verified web address in `data/site.json` → `developer_credit.url`.
+0d. **Booking emails (launch blocker).** Netlify shows the "booking" form with 0 submissions ever. Set the email notification (below), then send one real request from a phone and confirm it arrives. The new optional **Email** field registers on the next deploy.
 
 1. **Real photos:** 16 of Amy's photos are now live. Still needed, with client permission where faces show:
    - A photo for **Hairstyling** (updos and buns). The card currently has no picture rather than an unrelated one.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static site generator for Amy African Hair Braiding And Boutique.
+"""Static site generator for Amy African Hair Braiding & Boutique.
 
 No dependencies: `python3 build.py` reads data/*.json and src/, writes dist/.
 Set SITE_URL (env var or data/site.json "site_url") to add canonical URLs and the sitemap.
@@ -53,6 +53,8 @@ OG_IMAGE = S.get("share_image") or "images/logo/og-image.jpg"
 HERO = S.get("hero") or {}
 ABOUT = S.get("about") or {}
 BOUTIQUE = S.get("boutique") or {}
+STORE = S.get("storefront") or {}
+CREDIT = S.get("developer_credit") or {}
 
 # ---------------------------------------------------------------- icons
 ICONS = {
@@ -100,9 +102,13 @@ def json_ld():
     }
     if EST:
         ld["foundingDate"] = EST
+    if PHONE2:
+        ld["contactPoint"] = [{"@type": "ContactPoint", "telephone": t, "contactType": "customer service"}
+                              for t in (S["phone_e164"], S.get("phone_secondary_e164") or "") if t]
     if SITE_URL:
         ld["url"] = SITE_URL + "/"
-        ld["image"] = SITE_URL + "/" + OG_IMAGE
+        ld["logo"] = SITE_URL + "/images/logo/amy-logo-bright-600.webp"
+        ld["image"] = ([SITE_URL + "/" + STORE["fallback"]] if STORE.get("fallback") else []) + [SITE_URL + "/" + OG_IMAGE]
     if OFFERED:
         ld["makesOffer"] = [{"@type": "Offer", "itemOffered": {"@type": "Service", "name": s["name"]}} for s in OFFERED]
     return json.dumps(ld, ensure_ascii=False)
@@ -115,7 +121,7 @@ def head(page, title, desc, preload=""):
         canon = f'<link rel="canonical" href="{e(SITE_URL + "/" + path)}">'
         og_url = (f'<meta property="og:url" content="{e(SITE_URL + "/" + path)}">'
                   f'<meta property="og:image" content="{e(SITE_URL)}/{OG_IMAGE}"><meta property="og:image:width" content="1200">'
-                  f'<meta property="og:image:height" content="630"><meta property="og:image:alt" content="Braids by Amy: long box braids, blonde boho braids and feed-in braids">'
+                  f'<meta property="og:image:height" content="630"><meta property="og:image:alt" content="Braids by Amy: long box braids, blonde boho braids and feed-in braids"><meta property="og:locale" content="en_US">'
                   f'<meta name="twitter:image" content="{e(SITE_URL)}/{OG_IMAGE}">')
     return f'''<!doctype html>
 <html lang="en">
@@ -127,7 +133,7 @@ def head(page, title, desc, preload=""):
 {canon}
 <meta property="og:type" content="website"><meta property="og:site_name" content="{e(S["name"])}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">{og_url}
-<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{e(title)}"><meta name="twitter:description" content="{e(desc)}">
 <meta name="theme-color" content="#120a10">
 <link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" href="images/logo/favicon-32.png" type="image/png" sizes="32x32"><link rel="icon" href="images/logo/favicon-192.png" type="image/png" sizes="192x192"><link rel="apple-touch-icon" href="images/logo/apple-touch-icon-180.png">
 <link rel="preload" href="assets/fonts/cormorant.woff" as="font" type="font/woff" crossorigin>
@@ -171,7 +177,7 @@ def header(page):
   </div>
   <nav aria-label="Main"><ul class="menu-list">{links}</ul></nav>
   <div class="menu-actions">
-    <a class="btn btn-pink btn-block" href="contact.html#book">{ic("calendar")}<span>Book an appointment</span></a>
+    <a class="btn btn-pink btn-block" href="contact.html#book">{ic("calendar")}<span>Book Your Appointment</span></a>
     <a class="btn btn-ghost btn-block" href="{TEL}">{ic("phone")}<span>Call {e(S["phone"])}</span></a>
     {call2("btn btn-ghost btn-block")}
   </div>
@@ -204,7 +210,7 @@ def foot():
       <ul class="foot-links">{"".join(f'<li><a href="{h}">{e(t)}</a></li>' for h, t in NAV)}{social}</ul>
     </div>
   </div>
-  <div class="wrap foot-base"><p>© {year} {e(S["name"])} · {e(ADDR_LINE)}</p></div>
+  <div class="wrap foot-base"><p>© {year} {e(S["name"])} · {e(ADDR_LINE)}</p>{credit_html()}</div>
 </footer>
 <nav class="mbar" aria-label="Quick actions" data-mbar>
   <a class="mbar-call" href="{TEL}">{ic("phone")}<span>Call</span></a>
@@ -214,6 +220,20 @@ def foot():
 </body>
 </html>
 '''
+
+
+def credit_html():
+    """Developer credit, under the salon's copyright line. Linked only when a verified URL is set."""
+    name, text, url = CREDIT.get("name") or "", CREDIT.get("text") or "", CREDIT.get("url") or ""
+    if not text:
+        return ""
+    if url and name and name in text:
+        before, after = text.split(name, 1)
+        inner = (f'{e(before)}<a href="{e(url)}" target="_blank" rel="noopener">{e(name)}'
+                 f'<span class="sr"> (opens in a new tab)</span></a>{e(after)}')
+    else:
+        inner = e(text)
+    return f'<p class="foot-credit">{inner}</p>'
 
 
 def hours_html():
@@ -246,6 +266,10 @@ def service_card(s):
         tag = f'<span class="tag-example">{e(s.get("image_label") or "Style example")}</span>' if s.get("image_label") else ""
         alt = f'Example of {s["name"].lower()}' if s.get("image_label") else f'{s["name"]} by Amy'
         media = f'<div class="svc-media"><img src="{e(src)}" alt="{e(alt)}"{pos} loading="lazy" decoding="async">{tag}</div>'
+    else:
+        # No photo of Amy's own work yet: a branded panel keeps the cards even, without an unrelated picture.
+        media = ('<div class="svc-media svc-media-brand" aria-hidden="true"><img src="images/logo/amy-logo-bright-240.webp" '
+                 'width="240" height="303" alt="" loading="lazy" decoding="async"></div>')
     meta = []
     if s.get("duration"):
         meta.append(f'{ic("clock")}<span>{e(s["duration"])}</span>')
@@ -279,7 +303,7 @@ def reel_card(r):
     if r.get("mp4"):
         return f'''<li class="reel" data-kind="video">
   <div class="reel-frame"><video src="{e(r["mp4"])}" preload="none" controls muted playsinline{f' poster="{e(poster)}"' if poster else ""} aria-label="{e(title)}"></video></div>
-  <div class="reel-cap"><h3>{e(title)}</h3>{f'<a href="{e(url)}" target="_blank" rel="noopener">Instagram {ic("external")}</a>' if url else ""}</div>
+  <div class="reel-cap"><h3>{e(title)}</h3>{f'<a href="{e(url)}" target="_blank" rel="noopener">View on Instagram {ic("external")}</a>' if url else ""}</div>
 </li>'''
     bg = f'<img src="{e(poster)}" alt="" loading="lazy" decoding="async">' if poster else ""
     return f'''<li class="reel" data-kind="instagram" data-permalink="{e(url)}">
@@ -289,7 +313,7 @@ def reel_card(r):
     </button>
     <div class="reel-embed" data-embed></div>
   </div>
-  <div class="reel-cap"><h3>{e(title)}</h3><a href="{e(url)}" target="_blank" rel="noopener">Open post {ic("external")}</a></div>
+  <div class="reel-cap"><h3>{e(title)}</h3><a href="{e(url)}" target="_blank" rel="noopener">View on Instagram {ic("external")}</a></div>
 </li>'''
 
 
@@ -336,41 +360,71 @@ def tiktok_card(t):
     </button>
     <div class="reel-embed" data-embed></div>
   </div>
-  <div class="reel-cap"><h3>{e(title)}</h3><a href="{e(url)}" target="_blank" rel="noopener">Open on TikTok {ic("external")}</a></div>
+  <div class="reel-cap"><h3>{e(title)}</h3><a href="{e(url)}" target="_blank" rel="noopener">Watch on TikTok {ic("external")}</a></div>
 </li>'''
 
 
+SALON_FILM = {"mp4": "media/salon-showcase-v1.mp4", "poster": "media/salon-showcase-poster-v1.jpg", "w": 464, "h": 832}
+
+
+def salon_film():
+    """Amy's own salon footage (with sound). Nothing downloads until the visitor taps play; never autoplays,
+    so it can't compete with the silent Meet Amy clip. Native controls stay available, with or without JS."""
+    f = SALON_FILM
+    return f'''<div class="film-feature">
+  <figure class="film-card">
+    <div class="film-frame" data-showcase>
+      <video width="{f["w"]}" height="{f["h"]}" controls playsinline preload="none" poster="{f["poster"]}"
+             aria-label="Video from Amy’s salon: finished braided styles and the salon wall" data-showcase-video>
+        <source src="{f["mp4"]}" type="video/mp4">
+      </video>
+      <button class="film-play" type="button" data-showcase-play hidden><span class="reel-play">{ic("play")}</span><span class="sr">Play the salon video</span></button>
+    </div>
+  </figure>
+  <div class="film-copy">
+    <p class="eyebrow">Inside the salon</p>
+    <h3>Straight from <em>Amy’s chair</em></h3>
+    <p>Real clients, real styles, filmed at the salon on St. Charles Rock Road. Tap play to watch, with sound.</p>
+    <div class="btn-row"><a class="btn btn-pink" href="contact.html#book">{ic("calendar")}<span>Book Your Appointment</span></a></div>
+  </div>
+</div>'''
+
+
 def video_showcase(home):
-    """One carousel mixing Instagram and TikTok. Nothing third-party loads until a visitor taps play."""
+    """Amy's salon film, then a short carousel mixing Instagram and TikTok.
+    Nothing third-party loads until a card nears the screen (preview) or a visitor taps play."""
     ig = [r for r in REELS if r.get("home")] if home else REELS
     tt = [t for t in TIKS if t.get("home")] if home else TIKS
-    if home:
-        ig, tt = (ig or REELS)[:3], (tt or TIKS)[:3]
+    if home:  # a curated few on the home page; everything on Our Work
+        ig, tt = (ig or REELS)[:2], (tt or TIKS)[:2]
     cards = []
     for i in range(max(len(ig), len(tt))):  # alternate the two platforms
         if i < len(ig):
             cards.append(reel_card(ig[i]))
         if i < len(tt):
             cards.append(tiktok_card(tt[i]))
-    if not cards:
-        return ""
     follow = (f'<a class="btn btn-ghost" href="{e(IG)}" target="_blank" rel="noopener">{ic("instagram")}<span>@{e(IG_HANDLE)}</span></a>'
               + (f'<a class="btn btn-ghost" href="{e(TT)}" target="_blank" rel="noopener">{ic("tiktok")}<span>@{e(TT_HANDLE)}</span></a>' if TT else ""))
-    title = "Fresh from <em>the chair</em>" if home else "Our work <em>in motion</em>"
-    lede = ("Real videos of Amy’s work, from her Instagram and TikTok."
-            if home else "Every video here is Amy’s own work, posted on her Instagram and TikTok. Tap a video to play it.")
-    more = f'<a class="btn btn-gold" href="gallery.html">See all videos {ic("arrow")}</a>' if home else ""
-    return f'''<section class="band band-dark" id="videos" aria-labelledby="videos-h">
-  <div class="wrap">
-    <div class="sec-head sec-head-row">
-      <div><p class="eyebrow">Our work</p><h2 id="videos-h">{title}</h2><p class="lede">{lede}</p></div>
-      <div class="car-nav" aria-hidden="false">
-        <button type="button" class="car-btn" data-car-prev aria-label="Previous videos">{ic("left")}</button>
-        <button type="button" class="car-btn" data-car-next aria-label="Next videos">{ic("right")}</button>
-      </div>
+    title = "The salon <em>in motion</em>" if home else "Our work <em>in motion</em>"
+    lede = ("A look inside Amy’s salon, plus recent styles from her Instagram and TikTok."
+            if home else "Every video here is Amy’s own work: filmed in her salon or posted on her Instagram and TikTok.")
+    more = f'<a class="btn btn-gold" href="gallery.html#videos">See all videos {ic("arrow")}</a>' if home else ""
+    social = ""
+    if cards:
+        social = f'''<div class="wrap social-head">
+    <h3 class="social-h">Recent work on <em>Instagram &amp; TikTok</em></h3>
+    <div class="car-nav">
+      <button type="button" class="car-btn" data-car-prev aria-label="Previous videos">{ic("left")}</button>
+      <button type="button" class="car-btn" data-car-next aria-label="Next videos">{ic("right")}</button>
     </div>
   </div>
-  <ul class="reels" data-carousel tabindex="0" aria-label="Videos">{"".join(cards)}</ul>
+  <ul class="reels" data-carousel tabindex="0" aria-label="Videos from Instagram and TikTok">{"".join(cards)}</ul>'''
+    return f'''<section class="band band-dark" id="videos" aria-labelledby="videos-h">
+  <div class="wrap">
+    <div class="sec-head"><p class="eyebrow">Our work</p><h2 id="videos-h">{title}</h2><p class="lede">{lede}</p></div>
+    {salon_film()}
+  </div>
+  {social}
   <div class="wrap btn-row center-row">{more}{follow}</div>
 </section>'''
 
@@ -416,7 +470,7 @@ def booking_cta():
     <h2>Ready for your <em>next look?</em></h2>
     <p>Send a request online or call the salon. We’ll get back to you to confirm a time.</p>
     <div class="btn-row center-row">
-      <a class="btn btn-pink" href="contact.html#book">{ic("calendar")}<span>Book an appointment</span></a>
+      <a class="btn btn-pink" href="contact.html#book">{ic("calendar")}<span>Book Your Appointment</span></a>
       <a class="btn btn-ghost" href="{TEL}">{ic("phone")}<span>Call {e(S["phone"])}</span></a>
       {call2("btn btn-ghost")}
     </div>
@@ -449,17 +503,54 @@ def boutique_section():
 </section>'''
 
 
+HERO_SIZES = "(max-width: 859px) min(86vw, 400px), 470px"
+
+
 def hero_media():
     src = HERO.get("image")
     if not src:
         return ""
     tag = '<span class="tag-example">Style example</span>' if HERO.get("image_is_example") else ""
     w, h = HERO.get("image_width") or 900, HERO.get("image_height") or 1125
-    srcset = f' srcset="{e(HERO["srcset"])}" sizes="(max-width: 859px) 78vw, 400px"' if HERO.get("srcset") else ""
+    srcset = f' srcset="{e(HERO["srcset"])}" sizes="{HERO_SIZES}"' if HERO.get("srcset") else ""
     pos = f' style="object-position:{e(HERO["position"])}"' if HERO.get("position") else ""
-    cap = "" if HERO.get("image_is_example") else '<figcaption class="hero-cap">Box braids by Amy</figcaption>'
-    return (f'<figure class="hero-media"><img src="{e(src)}"{srcset} width="{w}" height="{h}" alt="{e(HERO.get("alt") or "Braided hairstyle")}"{pos} '
-            f'fetchpriority="high" decoding="async">{tag}{cap}</figure>')
+    cap = "" if HERO.get("image_is_example") else f'<figcaption class="hero-cap">{e(HERO.get("caption") or "Braids by Amy")}</figcaption>'
+    return (f'<figure class="hero-media"><div class="hero-arch"><img src="{e(src)}"{srcset} width="{w}" height="{h}" '
+            f'alt="{e(HERO.get("alt") or "Braided hairstyle")}"{pos} fetchpriority="high" decoding="async">{tag}</div>{cap}</figure>')
+
+
+def visit_salon():
+    """Real storefront photo with name, address and the three actions a visitor needs."""
+    if not STORE.get("image_base"):
+        return ""
+    base, widths = STORE["image_base"], STORE.get("widths") or []
+    ss = ", ".join(f"{base}-{w}.webp {w}w" for w in widths)
+    pic = (f'<picture><source type="image/webp" srcset="{e(ss)}" sizes="(max-width: 859px) min(88vw, 480px), 470px">'
+           f'<img src="{e(STORE["fallback"])}" width="{STORE.get("width", 900)}" height="{STORE.get("height", 1125)}" '
+           f'alt="{e(STORE.get("alt") or "Salon storefront")}" loading="lazy" decoding="async"></picture>')
+    second = (f'<p class="visit-alt">Also: <a href="{TEL2}">{e(PHONE2)}</a></p>' if PHONE2 else "")
+    return f'''<section class="band band-light visit-salon" id="visit" aria-labelledby="visit-h">
+  <div class="wrap visit-grid">
+    <figure class="visit-photo">{pic}</figure>
+    <div class="visit-copy">
+      <p class="eyebrow">Find us</p>
+      <h2 id="visit-h">Visit <em>Amy’s Salon</em></h2>
+      <p class="lede">Your next beautiful look starts here. Visit {e(S["name"])} on St. Charles Rock Road in St. Ann, Missouri.</p>
+      <address class="visit-addr">
+        <strong>{e(S["name"])}</strong>
+        <span>{e(A["street"])}</span>
+        <span>{e(A["city"])}, {e(A["region"])} {e(A["postal"])}</span>
+      </address>
+      <p class="visit-hours">{ic("clock")}<span>{"Hours: see below" if S.get("hours") else "Please call to confirm today’s hours."}</span></p>
+      <div class="visit-actions">
+        <a class="btn btn-pink" href="contact.html#book">{ic("calendar")}<span>Book Your Appointment</span></a>
+        <a class="btn btn-dark" href="{TEL}">{ic("phone")}<span>Call {e(S["phone"])}</span></a>
+        <a class="btn btn-ghost-dark" href="{e(MAPS)}" target="_blank" rel="noopener">{ic("map")}<span>Get Directions</span></a>
+      </div>
+      {second}
+    </div>
+  </div>
+</section>'''
 
 
 def meet_amy():
@@ -472,8 +563,7 @@ def meet_amy():
   <div class="wrap meet-grid">
     <div class="meet-intro">
       <p class="eyebrow meet-eyebrow"><span class="meet-rule" aria-hidden="true"></span>The woman behind the braids</p>
-      <h2 id="meet-h" class="meet-title">Meet <em>Amy.</em></h2>
-      <p class="meet-sub">The Hands. The Artistry. <span class="meet-nb">The Woman Behind the Beauty.</span></p>
+      <h2 id="meet-h" class="meet-title">Meet <em>Amy.</em> <span class="meet-sub">The Art Behind Every Braid.</span></h2>
     </div>
     <figure class="meet-film">
       <div class="meet-frame" data-film data-state="poster">
@@ -491,12 +581,11 @@ def meet_amy():
       <figcaption class="meet-cap">Inside the salon · St. Ann, MO</figcaption>
     </figure>
     <div class="meet-body">
-      <p>Behind every beautiful braid is a skilled pair of hands, patience, and a passion for making people feel their best.</p>
-      <p>Meet Amy, the woman behind Amy African Hair Braiding &amp; Boutique in St. Ann, Missouri.</p>
-      <p>Step inside her salon, experience her artistry, and discover the personal care behind every style.</p>
+      <p>Behind every beautiful style is dedication, precision, and a genuine passion for hair.</p>
+      <p>At {e(S["name"])} in St. Ann, Missouri, each appointment is an opportunity to create a look that reflects your personal style.</p>
       <div class="btn-row meet-actions">
         <a class="btn btn-ghost meet-btn" href="gallery.html">Explore Our Styles {ic("arrow")}</a>
-        <a class="btn btn-pink meet-btn" href="contact.html#book">{ic("calendar")}<span>Book an Appointment</span></a>
+        <a class="btn btn-pink meet-btn" href="contact.html#book">{ic("calendar")}<span>Book Your Appointment</span></a>
       </div>
       <a class="meet-link" href="services.html">Or see the services Amy offers {ic("arrow")}</a>
     </div>
@@ -506,7 +595,7 @@ def meet_amy():
 
 # ---------------------------------------------------------------- pages
 def page_home():
-    why = [("Since " + EST if EST else "Experienced", "Braiding in St. Ann for over a decade." if EST else "Years of braiding experience."),
+    why = [("Since " + EST, "Braiding in St. Ann since " + EST + ".") if EST else ("A real salon", "Visit us on St. Charles Rock Road in St. Ann."),
            ("Attention to detail", "Clean parts, even tension and a neat finish."),
            ("Made for you", "Size, length and style chosen with you."),
            ("Beautiful results", "Real styles by Amy, in photos and videos.")]
@@ -524,21 +613,25 @@ def page_home():
 <p class="lede">Discover the skill, precision and creativity behind every style. These are real hairstyles created by Amy for her clients.</p></div>
 <ul class="masonry masonry-home">{"".join(photo_item(p, "(max-width: 699px) 50vw, 380px") for p in photos)}</ul>
 <div class="center-row"><a class="btn btn-dark" href="gallery.html">Explore Amy’s work {ic("arrow")}</a></div></div></section>'''
-    preload = f'<link rel="preload" as="image" href="{e(HERO["image"])}">' if HERO.get("image") else ""
-    return head("index.html", "Amy African Hair Braiding | Braids in St. Ann & St. Louis, MO",
-                f"African hair braiding in St. Ann, MO, near St. Louis: braids, box braids, hair extensions and styling. Call {S['phone']}{' or ' + PHONE2 if PHONE2 else ''}, or request an appointment online.",
+    preload = ""
+    if HERO.get("image"):
+        preload = (f'<link rel="preload" as="image" href="{e(HERO["image"])}"'
+                   + (f' imagesrcset="{e(HERO["srcset"])}" imagesizes="{HERO_SIZES}"' if HERO.get("srcset") else "")
+                   + ' fetchpriority="high">')
+    return head("index.html", "Amy African Hair Braiding & Boutique | Braids in St. Ann & St. Louis, MO",
+                f"African hair braiding in St. Ann, MO, near St. Louis: box braids, bohemian braids, feed-in braids, curly twists and extensions on St. Charles Rock Road. Call {S['phone']} or request an appointment online.",
                 preload) + f'''
 <section class="hero" aria-labelledby="hero-h">
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <p class="eyebrow">{ic("map")}<span>St. Ann · St. Louis, MO{f" · Since {e(EST)}" if EST else ""}</span></p>
-      <h1 id="hero-h">Braids, done <em>beautifully.</em></h1>
-      <p class="hero-lede">African hair braiding, extensions and styling on St. Charles Rock Road in St. Ann, just outside St. Louis.</p>
+      <h1 id="hero-h"><span>Your Hair.</span> <em>Your Crown.</em> <span>Your Signature.</span></h1>
+      <p class="hero-lede">Beautiful African braids, protective styles, and flawless finishes — crafted with care at {e(S["name"])} in St. Ann, Missouri.</p>
       <div class="btn-row">
-        <a class="btn btn-pink" href="contact.html#book">{ic("calendar")}<span>Book appointment</span></a>
-        <a class="btn btn-ghost" href="{TEL}">{ic("phone")}<span>Call the salon</span></a>
+        <a class="btn btn-pink" href="contact.html#book">{ic("calendar")}<span>Book Your Appointment</span></a>
+        <a class="btn btn-ghost" href="gallery.html">Explore Our Styles {ic("arrow")}</a>
       </div>
-      <a class="hero-link" href="services.html">Explore styles {ic("arrow")}</a>
+      <p class="hero-meta"><a href="{TEL}">{ic("phone")}<span>{e(S["phone"])}</span></a><span class="hero-dot" aria-hidden="true">·</span><a href="#visit">{e(A["street"])}</a></p>
     </div>
     {hero_media()}
   </div>
@@ -566,6 +659,7 @@ def page_home():
 {video_showcase(home=True)}
 {reviews_block}
 {boutique_section()}
+{visit_salon()}
 {booking_cta()}
 ''' + foot()
 
@@ -590,11 +684,12 @@ def page_services():
     note = ('<p class="note">Photos marked “Style example” show the style, not Amy’s own work. '
             'See her real work on the <a href="gallery.html">Our Work</a> page.</p>') if any_example else ""
     return head("services.html", "Braiding Services in St. Ann, MO | Amy African Hair Braiding",
-                "Braids, box braids, hair extensions and hairstyling at Amy African Hair Braiding And Boutique in St. Ann, MO, near St. Louis. Price on request.") + page_hero(
+                "African braids, box braids, feed-in braids, bohemian braids, curly twists, hair extensions and styling at Amy African Hair Braiding & Boutique in St. Ann, MO, near St. Louis. Personal quotes.") + page_hero(
         "Services", "Find your <em>next style</em>",
         "Choose a style and request an appointment. Prices depend on size, length and hair, so every quote is personal.") + f'''
 <section class="band band-light">
   <div class="wrap">
+    <h2 class="sr">Our braiding services</h2>
     <div class="svc-grid">{"".join(service_card(s) for s in OFFERED)}</div>
     {note}
     <p class="center-row"><a class="btn btn-dark" href="contact.html?style={urllib.parse.quote("Not sure yet")}#book">Not sure which style? Ask us {ic("arrow")}</a></p>
@@ -668,13 +763,13 @@ def page_about():
   <div><dt>Specialties</dt><dd>{", ".join(e(s["name"]) for s in OFFERED)}</dd></div>
   <div><dt>Follow</dt><dd><a href="{e(IG)}" target="_blank" rel="noopener">Instagram</a>{f' · <a href="{e(TT)}" target="_blank" rel="noopener">TikTok</a>' if TT else ""}</dd></div>
 </dl>'''
-    intro = (f'<p class="about-lede">Amy African Hair Braiding And Boutique has welcomed clients on St. Charles Rock Road in St. Ann{since}, '
+    intro = (f'<p class="about-lede">Amy African Hair Braiding &amp; Boutique has welcomed clients on St. Charles Rock Road in St. Ann{since}, '
              f'braiding for women and girls from across the St. Louis area. The salon offers {", ".join(s["name"].lower() for s in OFFERED[:-1])} '
              f'and {OFFERED[-1]["name"].lower()}, with a small boutique for finishing touches.</p>'
              '<p>The best way to know Amy’s work is to see it: her newest styles are posted on Instagram and TikTok, '
              'and gathered on our <a href="gallery.html">Our Work</a> page.</p>') if OFFERED else ""
     return head("about.html", "About Amy | African Hair Braiding in St. Ann, MO",
-                f"Meet Amy African Hair Braiding And Boutique, braiding in St. Ann, MO{since}, for clients across the St. Louis area.") + page_hero(
+                f"Meet Amy African Hair Braiding & Boutique, braiding in St. Ann, MO{since}, for clients across the St. Louis area.") + page_hero(
         "About", "The salon behind <em>the braids</em>",
         f"A braiding salon in St. Ann, Missouri{since}.") + f'''
 <section class="band band-light">
@@ -700,7 +795,7 @@ def page_reviews():
     cards = "".join(review_card(r) for r in REVIEWS)
     body = f'<div class="reviews">{cards}</div>' if cards else ""
     return head("reviews.html", "Reviews | Amy African Hair Braiding, St. Ann, MO",
-                "Client reviews of Amy African Hair Braiding And Boutique in St. Ann, MO. Read and leave reviews on Google.") + page_hero(
+                "Client reviews of Amy African Hair Braiding & Boutique in St. Ann, MO. Read and leave reviews on Google.") + page_hero(
         "Reviews", "Kind words <em>from our clients</em>",
         "Read what clients say on Google, and share your own experience.",
         f'<div class="btn-row"><a class="btn btn-dark" href="{e(S["google_reviews_url"])}" target="_blank" rel="noopener">Reviews on Google {ic("external")}</a></div>') + f'''
@@ -721,7 +816,7 @@ def page_contact():
     sec_phone = f'<a class="contact-line" href="{TEL2}">{ic("phone")}<span>{e(PHONE2)}</span></a>' if PHONE2 else ""
     park = f'<p class="muted">{e(S["parking"])}</p>' if S.get("parking") else ""
     return head("contact.html", "Book an Appointment | Amy African Hair Braiding, St. Ann, MO",
-                f"Request a braiding appointment at Amy African Hair Braiding And Boutique, {ADDR_LINE}. Call {S['phone']}{' or ' + PHONE2 if PHONE2 else ''}.") + page_hero(
+                f"Request a braiding appointment at Amy African Hair Braiding & Boutique, {ADDR_LINE}. Call {S['phone']}{' or ' + PHONE2 if PHONE2 else ''}.") + page_hero(
         "Book", "Request an <em>appointment</em>",
         "Tell us the style and the day you’d like. We’ll contact you to confirm a time. Prefer to talk? Call the salon.",
         f'<div class="btn-row"><a class="btn btn-ghost-dark" href="{TEL}">{ic("phone")}<span>Call {e(S["phone"])}</span></a>{call2("btn btn-ghost-dark")}</div>') + f'''
@@ -737,6 +832,7 @@ def page_contact():
         <div class="f"><label for="b-name">Your name</label><input id="b-name" name="name" autocomplete="name" required aria-describedby="b-name-err"><p class="f-err" id="b-name-err"></p></div>
         <div class="f"><label for="b-phone">Phone number</label><input id="b-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required pattern="[0-9+()\\-\\s.]{{7,}}" aria-describedby="b-phone-err"><p class="f-err" id="b-phone-err"></p></div>
       </div>
+      <div class="f"><label for="b-email">Email <span class="opt">optional · we’ll usually call or text</span></label><input id="b-email" name="email" type="email" autocomplete="email" inputmode="email" aria-describedby="b-email-err"><p class="f-err" id="b-email-err"></p></div>
       <div class="f"><label for="b-style">Hairstyle</label>
         <select id="b-style" name="style" required aria-describedby="b-style-err"><option value="">Choose a style…</option>{opts}<option value="Not sure yet">Not sure yet</option><option value="Boutique inquiry">Boutique question</option></select><p class="f-err" id="b-style-err"></p></div>
       <div class="f2">
@@ -752,6 +848,7 @@ def page_contact():
       <p class="privacy">Your details are used only to arrange your appointment. They are never shared or used for marketing.</p>
     </form>
     <aside class="visit">
+      {store_thumb()}
       <h2>Visit the salon</h2>
       <address><a href="{e(MAPS)}" target="_blank" rel="noopener">{ic("map")}<span>{e(S["name"])}<br>{e(A["street"])}<br>{e(A["city"])}, {e(A["region"])} {e(A["postal"])}</span></a></address>
       <a class="contact-line" href="{TEL}">{ic("phone")}<span>{e(S["phone"])}</span></a>
@@ -768,6 +865,13 @@ def page_contact():
 </section>
 {pol_section}
 ''' + foot()
+
+
+def store_thumb():
+    if not STORE.get("image_base"):
+        return ""
+    return (f'<img class="visit-store" src="{e(STORE["image_base"])}-560.webp" width="560" height="{round(560 * STORE.get("height", 1402) / STORE.get("width", 1122))}" '
+            f'alt="{e(STORE.get("alt") or "Salon storefront")}" loading="lazy" decoding="async">')
 
 
 def page_received():
