@@ -1,9 +1,9 @@
 {
   "_help": "Business details used on every page. Leave a value empty (\"\") or null to hide it until it is confirmed.",
-  "name": "Amy African Hair Braiding And Boutique",
+  "name": "Amy African Hair Braiding & Boutique",
   "short_name": "Amy African Hair Braiding",
-  "established": "2010",
-  "_established_note": "From the salon sign (EST 2010). Leave empty to hide.",
+  "established": "",
+  "_established_note": "Hidden until confirmed. The wall sign reads 'EST 2019' in the earlier photos (green light) and appears to read 'EST 2010' in the Nov 2026 photos (red light). Set to the correct year, e.g. \"2010\", to show 'Since …' in the hero, footer, About page and structured data.",
   "site_url": "https://amy-african-hair-braiding.netlify.app",
   "draft_placeholders": false,
   "address": {
@@ -97,15 +97,35 @@
   },
   "_draft_note": "Internal placeholders are no longer rendered on the public site. Missing content is simply hidden.",
   "hero": {
-    "image": "images/gallery/box-braids-long-length-800.webp",
-    "srcset": "images/gallery/box-braids-long-length-480.webp 480w, images/gallery/box-braids-long-length-800.webp 800w",
-    "image_width": 800,
-    "image_height": 1421,
+    "image": "images/gallery/black-boho-braids-front-800.webp",
+    "srcset": "images/gallery/black-boho-braids-front-480.webp 480w, images/gallery/black-boho-braids-front-800.webp 800w, images/gallery/black-boho-braids-front-900.webp 900w",
+    "image_width": 900,
+    "image_height": 1600,
     "image_is_example": false,
-    "position": "50% 22%",
-    "alt": "Long black box braids by Amy, side view",
-    "_note": "Amy's own work (photo 02)."
+    "position": "50% 62%",
+    "alt": "Client wearing long black bohemian braids with loose curls, styled by Amy in her St. Ann salon",
+    "caption": "Bohemian braids by Amy",
+    "_note": "Amy's own work (Nov 2026 photo 06, full-length front view)."
   },
   "share_image": "images/og-amy-work.jpg",
-  "_share_image_note": "Link-preview picture (1200x630) for iMessage, WhatsApp, Facebook, etc. Made from Amy's photos 02, 05 and 09."
+  "_share_image_note": "Link-preview picture (1200x630) for iMessage, WhatsApp, Facebook, etc. Made from Amy's photos 02, 05 and 09.",
+  "storefront": {
+    "image_base": "images/salon/storefront",
+    "widths": [
+      560,
+      900,
+      1122
+    ],
+    "fallback": "images/salon/storefront.jpg",
+    "width": 1122,
+    "height": 1402,
+    "alt": "Storefront of Amy's African Hair Braiding at 10007 St Charles Rock Rd in St. Ann, with the pink salon sign, an open sign and braid photos in the windows",
+    "_note": "Retouched photo of the real storefront (version with the OPEN sign). Its sign shows (314) 249-1615 and (314) 395-7624, as on the physical sign. Owner to confirm this is the approved photo."
+  },
+  "developer_credit": {
+    "text": "Designed & Developed by Dalal Technologies",
+    "name": "Dalal Technologies",
+    "url": "",
+    "_note": "Add the verified Dalal Technologies web address to link the name. Left unlinked until confirmed."
+  }
 }
