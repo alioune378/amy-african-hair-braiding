@@ -121,7 +121,7 @@ def head(page, title, desc, preload=""):
         canon = f'<link rel="canonical" href="{e(SITE_URL + "/" + path)}">'
         og_url = (f'<meta property="og:url" content="{e(SITE_URL + "/" + path)}">'
                   f'<meta property="og:image" content="{e(SITE_URL)}/{OG_IMAGE}"><meta property="og:image:width" content="1200">'
-                  f'<meta property="og:image:height" content="630"><meta property="og:image:alt" content="Braids by Amy: long box braids, blonde boho braids and feed-in braids"><meta property="og:locale" content="en_US">'
+                  f'<meta property="og:image:height" content="630"><meta property="og:image:alt" content="Braids by Amy: long black and honey blonde bohemian braids"><meta property="og:locale" content="en_US">'
                   f'<meta name="twitter:image" content="{e(SITE_URL)}/{OG_IMAGE}">')
     return f'''<!doctype html>
 <html lang="en">
