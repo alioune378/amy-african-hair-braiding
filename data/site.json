@@ -125,7 +125,27 @@
   "developer_credit": {
     "text": "Designed & Developed by Dalal Technologies",
     "name": "Dalal Technologies",
-    "url": "",
-    "_note": "Add the verified Dalal Technologies web address to link the name. Left unlinked until confirmed."
+    "url": "https://www.dalaltechnologies.com",
+    "_note": "Linked to the Dalal Technologies website."
+  },
+  "noindex": true,
+  "_noindex_note": "true keeps this preview out of search engines (meta robots + robots.txt). Set to false once the production domain (amyafricanbraids.com) is connected and approved.",
+  "hero_video": {
+    "mp4": "media/amy-hero-v2.mp4",
+    "webm": "media/amy-hero-v2.webm",
+    "poster": "media/amy-hero-poster-v2.jpg",
+    "poster_webp": "media/amy-hero-poster-v2.webp",
+    "width": 464,
+    "height": 832,
+    "alt": "Amy styling a smiling client's crochet twists in her St. Ann salon",
+    "_note": "7-second silent loop cut from Amy's own salon footage (amy-at-work-v1), lightly colour-corrected. Never AI-generated."
+  },
+  "amy_portrait": {
+    "src": "images/amy/amy-portrait-464.webp",
+    "fallback": "images/amy/amy-portrait.jpg",
+    "width": 464,
+    "height": 580,
+    "alt": "Amy smiling in her salon in front of the Amy African Hair Braiding wall sign",
+    "_note": "Still frame from Amy's own salon footage. Replace with a proper portrait when available."
   }
 }

@@ -4,19 +4,27 @@
   document.documentElement.classList.add("js");
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var reduced = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
+  var saveData = !!(navigator.connection && navigator.connection.saveData);
 
-  /* ---------- mobile menu: overlay, scroll lock, focus trap, Escape */
+  /* ---------- header: hairline + shadow once scrolled */
+  var head = $("[data-head]");
+  var onScroll = function () { if (head) head.classList.toggle("is-scrolled", window.scrollY > 8); };
+  window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
+
+  /* ---------- mobile menu (white sheet): scroll lock, focus trap, Escape, tap outside */
   var menu = $("[data-menu]"), openBtn = $("[data-menu-open]"), closeBtn = $("[data-menu-close]");
   if (menu && openBtn) {
-    var setMenu = function (open) {
+    var setMenu = function (open, keepFocus) {
       menu.hidden = !open;
       openBtn.setAttribute("aria-expanded", String(open));
       document.body.classList.toggle("menu-open", open);
-      if (open) closeBtn.focus(); else openBtn.focus();
+      if (open) closeBtn.focus(); else if (!keepFocus) openBtn.focus();
     };
     openBtn.addEventListener("click", function () { setMenu(true); });
     closeBtn.addEventListener("click", function () { setMenu(false); });
-    $$("a", menu).forEach(function (a) { a.addEventListener("click", function () { menu.hidden = true; document.body.classList.remove("menu-open"); openBtn.setAttribute("aria-expanded", "false"); }); });
+    menu.addEventListener("click", function (ev) { if (ev.target === menu) setMenu(false); });
+    $$("a", menu).forEach(function (a) { a.addEventListener("click", function () { setMenu(false, true); }); });
     document.addEventListener("keydown", function (ev) {
       if (menu.hidden) return;
       if (ev.key === "Escape") return setMenu(false);
@@ -26,52 +34,79 @@
         else if (!ev.shiftKey && document.activeElement === last) { ev.preventDefault(); first.focus(); }
       }
     });
-    window.addEventListener("resize", function () { if (window.innerWidth >= 1040 && !menu.hidden) setMenu(false); });
+    window.addEventListener("resize", function () { if (window.innerWidth > 960 && !menu.hidden) setMenu(false, true); });
     window.addEventListener("pageshow", function () { menu.hidden = true; document.body.classList.remove("menu-open"); });
   }
 
-  /* ---------- mobile booking bar: shown after the hero; hidden over the form, the footer and a playing video */
+  /* ---------- hero video: Amy at work. Muted loop, never blocks the page.
+     Starts after the page has loaded; poster stays for reduced motion / Data Saver / failures. Pause button always available. */
+  var hero = $("[data-hero]");
+  if (hero) {
+    var hv = $("[data-hero-video]", hero), hb = $("[data-hero-toggle]", hero), hl = $("[data-hero-label]", hero);
+    var loaded = false, userPaused = false, failed = false;
+    var setState = function (s) { hero.setAttribute("data-state", s); if (hl) hl.textContent = s === "playing" ? "Pause video" : "Play video"; };
+    var fail = function () { failed = true; setState("poster"); if (hb) hb.hidden = true; };
+    var load = function () {
+      if (loaded) return; loaded = true;
+      $$("source", hv).forEach(function (s) { s.src = s.getAttribute("data-src"); });
+      var srcs = $$("source", hv); if (srcs.length) srcs[srcs.length - 1].addEventListener("error", fail);
+      hv.addEventListener("error", fail);
+      hv.load();
+    };
+    var play = function () {
+      if (failed) return; load();
+      var p = hv.play(); if (p && p.catch) p.catch(function () { setState("poster"); });
+    };
+    hv.addEventListener("playing", function () { setState("playing"); });
+    hv.addEventListener("pause", function () { if (!failed) setState(loaded ? "paused" : "poster"); });
+    setState("poster");
+    if (hb) {
+      hb.hidden = false;
+      hb.addEventListener("click", function () { if (hv.paused) { userPaused = false; play(); } else { userPaused = true; hv.pause(); } });
+    }
+    var auto = function () { return !(reduced && reduced.matches) && !saveData; };
+    var start = function () { if (auto()) play(); };
+    if (document.readyState === "complete") start(); else window.addEventListener("load", start);
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (es) {
+        if (!loaded) return;
+        if (es[0].isIntersecting) { if (!userPaused && auto() && hv.paused) play(); }
+        else if (!hv.paused) hv.pause();
+      }, { threshold: 0.2 }).observe(hero);
+    }
+    if (reduced && reduced.addEventListener) reduced.addEventListener("change", function () { if (reduced.matches && !hv.paused) hv.pause(); });
+  }
+
+  /* ---------- discreet booking pill on phones: after the hero, hidden over the form and footer */
   var bar = $("[data-mbar]");
   if (bar) {
-    var hide = $$("#book, [data-foot]");
-    var update = function () {
-      var vh = window.innerHeight, show = window.scrollY > vh * 0.6;
-      hide.forEach(function (el) { var r = el.getBoundingClientRect(); if (r.top < vh && r.bottom > 0) show = false; });
-      $$(".reel.is-embedded .reel-frame, [data-showcase].is-playing").forEach(function (el) { var r = el.getBoundingClientRect(); if (r.bottom > vh - 90 && r.top < vh) show = false; });
+    var hideOver = $$("#book, [data-foot], .final");
+    var upd = function () {
+      var vh = window.innerHeight, show = window.scrollY > vh * 0.7;
+      hideOver.forEach(function (el) { var r = el.getBoundingClientRect(); if (r.top < vh - 40 && r.bottom > 0) show = false; });
+      if (document.body.classList.contains("menu-open") || document.body.classList.contains("lb-open")) show = false;
       bar.classList.toggle("is-on", show);
       bar.setAttribute("aria-hidden", String(!show));
-      $$("a", bar).forEach(function (a) { a.tabIndex = show ? 0 : -1; });
+      bar.tabIndex = show ? 0 : -1;
     };
-    var ticking = false;
-    window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(function () { ticking = false; update(); }); } }, { passive: true });
-    window.addEventListener("resize", update);
-    document.addEventListener("focusin", function (ev) { if (ev.target.matches && ev.target.matches("input, select, textarea")) { bar.classList.remove("is-on"); } });
-    update();
+    var tick = false;
+    window.addEventListener("scroll", function () { if (!tick) { tick = true; requestAnimationFrame(function () { tick = false; upd(); }); } }, { passive: true });
+    window.addEventListener("resize", upd); upd();
   }
 
-  /* ---------- carousel arrows */
-  var car = $("[data-carousel]");
-  if (car) {
-    var step = function (d) { var c = $(".reel", car); car.scrollBy({ left: d * ((c ? c.offsetWidth : 260) + 16) * 2, behavior: "smooth" }); };
-    var p = $("[data-car-prev]"), n = $("[data-car-next]");
-    if (p) p.addEventListener("click", function () { step(-1); });
-    if (n) n.addEventListener("click", function () { step(1); });
-  }
-
-  /* ---------- filters */
+  /* ---------- style filters */
   $$("[data-filter-group]").forEach(function (group) {
     var target = $('[data-filter-target="' + group.getAttribute("data-filter-group") + '"]');
     if (!target) return;
     group.addEventListener("click", function (ev) {
-      var btn = ev.target.closest("[data-filter]");
-      if (!btn) return;
+      var btn = ev.target.closest("[data-filter]"); if (!btn) return;
       var v = btn.getAttribute("data-filter");
       $$("[data-filter]", group).forEach(function (b) { b.setAttribute("aria-pressed", String(b === btn)); });
       $$("[data-cat]", target).forEach(function (card) { card.hidden = !(v === "all" || card.getAttribute("data-cat") === v); });
     });
   });
 
-  /* ---------- lightbox: swipe, arrows, keyboard; follows the active filter */
+  /* ---------- lightbox: swipe, arrows, keyboard; follows the active filter; Book this look */
   var lb = $("[data-lb]");
   if (lb) {
     var lbImg = $("[data-lb-img]", lb), lbCap = $("[data-lb-cap]", lb), lbBook = $("[data-lb-book]", lb), lbCount = $("[data-lb-count]", lb);
@@ -80,16 +115,15 @@
       idx = (i + list.length) % list.length;
       var b = list[idx];
       lbImg.src = b.getAttribute("data-lightbox"); lbImg.alt = b.getAttribute("data-alt") || "";
-      lbCap.textContent = (b.getAttribute("data-alt") || "") + (b.getAttribute("data-cap") ? " · " + b.getAttribute("data-cap") : "");
+      lbCap.textContent = b.getAttribute("data-cap") || "";
       var link = b.getAttribute("data-book"); lbBook.hidden = !link; if (link) lbBook.href = link;
       lbCount.textContent = (idx + 1) + " / " + list.length;
     };
-    var closeLb = function () { lb.hidden = true; lbImg.removeAttribute("src"); document.body.style.overflow = ""; document.body.classList.remove("lb-open"); if (lastFocus) lastFocus.focus(); };
+    var closeLb = function () { lb.hidden = true; lbImg.removeAttribute("src"); document.body.classList.remove("lb-open"); if (lastFocus) lastFocus.focus(); };
     $$("[data-lightbox]").forEach(function (btn) {
       btn.addEventListener("click", function () {
-        document.body.classList.add("lb-open");
         list = $$("[data-lightbox]").filter(function (x) { var li = x.closest("[data-cat]"); return !(li && li.hidden); });
-        lastFocus = btn; lb.hidden = false; document.body.style.overflow = "hidden";
+        lastFocus = btn; lb.hidden = false; document.body.classList.add("lb-open");
         show(list.indexOf(btn)); $("[data-lb-close]", lb).focus();
       });
     });
@@ -115,134 +149,57 @@
       }
     });
   }
-  $$("[data-ba]").forEach(function (frame) {
-    var range = $(".ba-range", frame);
-    range.addEventListener("input", function () { frame.style.setProperty("--pos", range.value + "%"); });
+
+  /* ---------- only one video plays at a time */
+  document.addEventListener("play", function (ev) {
+    if (ev.target.tagName !== "VIDEO") return;
+    $$("video").forEach(function (v) { if (v !== ev.target && !v.paused && !v.muted) v.pause(); });
+    if (!ev.target.muted) $$("video[muted], video").forEach(function (v) { if (v !== ev.target && !v.paused) v.pause(); });
+  }, true);
+
+  /* ---------- salon film: tap to play with sound; nothing downloads before that */
+  $$("[data-showcase]").forEach(function (sc) {
+    var sv = $("[data-showcase-video]", sc), sp = $("[data-showcase-play]", sc);
+    if (!sv || !sp) return;
+    sp.hidden = false;
+    sp.addEventListener("click", function () { sc.classList.add("was-played"); var r = sv.play(); if (r && r.catch) r.catch(function () {}); });
+    sv.addEventListener("play", function () { sc.classList.add("is-playing", "was-played"); });
+    sv.addEventListener("pause", function () { sc.classList.remove("is-playing"); });
   });
 
-  /* ---------- videos: nothing from Instagram or TikTok loads until the visitor taps play */
-  var openOut = function (url) { window.open(url, "_blank", "noopener"); };
-  var fallback = function (reel, url) {
-    reel.setAttribute("data-state", "fallback");
-    // Not opened automatically (browsers block pop-ups after a delay): the next tap opens the post.
-    var st = $("[data-status]", reel); if (st) st.textContent = "Tap to open on " + (reel.getAttribute("data-kind") === "tiktok" ? "TikTok" : "Instagram");
-    void url;
-  };
+  /* ---------- Instagram / TikTok cards (only rendered when a real cover exists): load on tap */
   var igState = "idle", igWait = [];
   var loadIg = function (cb) {
     if (igState === "ready") return cb(true);
     if (igState === "failed") return cb(false);
-    igWait.push(cb);
-    if (igState === "loading") return;
+    igWait.push(cb); if (igState === "loading") return;
     igState = "loading";
-    var s = document.createElement("script");
-    s.async = true; s.src = "https://www.instagram.com/embed.js";
+    var s = document.createElement("script"); s.async = true; s.src = "https://www.instagram.com/embed.js";
     s.onload = function () { igState = "ready"; igWait.splice(0).forEach(function (f) { f(true); }); };
     s.onerror = function () { igState = "failed"; igWait.splice(0).forEach(function (f) { f(false); }); };
     document.body.appendChild(s);
   };
-  var playIg = function (reel) {
-    var url = reel.getAttribute("data-permalink"), box = $("[data-embed]", reel), st = $("[data-status]", reel);
-    if (st) st.textContent = "Loading…";
-    var bq = document.createElement("blockquote");
-    bq.className = "instagram-media"; bq.setAttribute("data-instgrm-permalink", url); bq.setAttribute("data-instgrm-version", "14");
-    box.appendChild(bq);
-    loadIg(function (ok) {
-      if (!ok || !window.instgrm) { box.innerHTML = ""; return fallback(reel, url); }
-      window.instgrm.Embeds.process();
-      var tries = 0, t = setInterval(function () {
-        tries++;
-        if (box.querySelector("iframe")) { clearInterval(t); reel.classList.add("is-embedded"); reel.setAttribute("data-state", "embedded"); }
-        else if (tries > 20) { clearInterval(t); box.innerHTML = ""; fallback(reel, url); }
-      }, 400);
-    });
-  };
-  var playTt = function (reel) {
-    var vid = reel.getAttribute("data-vid"), url = reel.getAttribute("data-url"), st = $("[data-status]", reel);
-    var render = function (id) {
-      var f = document.createElement("iframe");
-      f.src = "https://www.tiktok.com/player/v1/" + id + "?music_info=0&description=0&rel=0&autoplay=1&loop=0";
-      f.title = "TikTok video from " + document.title.split("|")[0];
-      f.setAttribute("allow", "autoplay; fullscreen; encrypted-media; picture-in-picture");
-      f.setAttribute("allowfullscreen", "");
-      f.style.cssText = "position:absolute;inset:0;width:100%;height:100%;border:0";
-      var box = $("[data-embed]", reel); box.innerHTML = ""; box.appendChild(f);
-      reel.classList.add("is-embedded"); reel.setAttribute("data-state", "embedded");
-    };
-    if (vid) return render(vid);
-    if (st) st.textContent = "Loading…";
-    if (!window.fetch) return fallback(reel, url);
-    fetch("https://www.tiktok.com/oembed?url=" + encodeURIComponent(url))
-      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-      .then(function (d) {
-        var m = /data-video-id="(\d+)"/.exec(d.html || "") || /video\/(\d+)/.exec(d.html || "");
-        var id = (m && m[1]) || d.embed_product_id;
-        if (!id) throw 0;
-        reel.setAttribute("data-vid", id); render(id);
-      })
-      .catch(function () { fallback(reel, url); });
-  };
   $$("[data-load]").forEach(function (btn) {
     btn.addEventListener("click", function () {
-      var reel = btn.closest(".reel"), state = reel.getAttribute("data-state");
-      if (state === "fallback") return openOut(reel.getAttribute("data-permalink") || reel.getAttribute("data-url"));
-      if (state) return;
-      reel.setAttribute("data-state", "loading");
-      if (reel.getAttribute("data-kind") === "tiktok") playTt(reel); else playIg(reel);
+      var card = btn.closest(".vt"), box = $("[data-embed]", card), kind = card.getAttribute("data-kind");
+      var out = card.getAttribute("data-permalink") || card.getAttribute("data-url");
+      if (kind === "tiktok" && card.getAttribute("data-vid")) {
+        var f = document.createElement("iframe");
+        f.src = "https://www.tiktok.com/player/v1/" + card.getAttribute("data-vid") + "?music_info=0&description=0&rel=0&autoplay=1";
+        f.title = "TikTok video"; f.setAttribute("allow", "autoplay; fullscreen; encrypted-media"); f.setAttribute("allowfullscreen", "");
+        f.style.cssText = "position:absolute;inset:0;width:100%;height:100%;border:0";
+        box.appendChild(f); btn.hidden = true; return;
+      }
+      if (kind === "instagram") {
+        var bq = document.createElement("blockquote");
+        bq.className = "instagram-media"; bq.setAttribute("data-instgrm-permalink", out); bq.setAttribute("data-instgrm-version", "14");
+        box.appendChild(bq);
+        loadIg(function (ok) { if (ok && window.instgrm) { window.instgrm.Embeds.process(); btn.hidden = true; } else { box.innerHTML = ""; window.location.href = out; } });
+        return;
+      }
+      window.location.href = out;
     });
   });
-  /* Previews: as each card comes into view, show the platform's own preview —
-     TikTok's cover image (from its public oEmbed) and Instagram's post embed — without playing anything. */
-  var ttCover = function (reel) {
-    if (reel.querySelector(".reel-facade img")) return;
-    var url = reel.getAttribute("data-url");
-    if (!url || !window.fetch) return;
-    fetch("https://www.tiktok.com/oembed?url=" + encodeURIComponent(url))
-      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-      .then(function (d) {
-        var m = /data-video-id="(\d+)"/.exec(d.html || "") || /video\/(\d+)/.exec(d.html || "");
-        var id = (m && m[1]) || d.embed_product_id;
-        if (id && !reel.getAttribute("data-vid")) reel.setAttribute("data-vid", id);
-        if (d.thumbnail_url) {
-          var img = document.createElement("img");
-          img.alt = ""; img.decoding = "async"; img.src = d.thumbnail_url;
-          var fac = $(".reel-facade", reel); fac.insertBefore(img, fac.firstChild);
-        }
-      })
-      .catch(function () { /* keep the branded cover */ });
-  };
-  var previewed = 0;
-  if ("IntersectionObserver" in window) {
-    var pio = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (!en.isIntersecting) return;
-        var reel = en.target; pio.unobserve(reel);
-        if (reel.getAttribute("data-kind") === "tiktok") ttCover(reel);
-        else if (reel.getAttribute("data-kind") === "instagram" && !reel.getAttribute("data-state") && previewed < 6) {
-          previewed++; reel.setAttribute("data-state", "loading"); playIg(reel);
-        }
-      });
-    }, { rootMargin: "100px 200px" });
-    $$('.reel[data-kind="tiktok"], .reel[data-kind="instagram"]').forEach(function (r) { pio.observe(r); });
-  }
-
-  document.addEventListener("play", function (ev) {
-    if (ev.target.tagName !== "VIDEO") return;
-    $$("video").forEach(function (v) { if (v !== ev.target && !v.paused) v.pause(); });
-  }, true);
-  var otherPlaying = function (self) { return $$("video").some(function (v) { return v !== self && !v.paused && !v.ended; }); };
-
-  /* ---------- salon film: tap to play (with sound). Nothing downloads before that; native controls stay. */
-  var sc = $("[data-showcase]");
-  if (sc) {
-    var sv = $("[data-showcase-video]", sc), sp = $("[data-showcase-play]", sc);
-    sp.hidden = false;
-    sc.classList.add("has-overlay");
-    sp.addEventListener("click", function () { var r = sv.play(); if (r && r.catch) r.catch(function () {}); });
-    sv.addEventListener("play", function () { sc.classList.add("is-playing", "was-played"); });
-    sv.addEventListener("pause", function () { sc.classList.remove("is-playing"); });
-    sv.addEventListener("ended", function () { sc.classList.remove("is-playing"); });
-  }
 
   /* ---------- booking form */
   var form = $("[data-book]");
@@ -250,29 +207,36 @@
     var params = new URLSearchParams(location.search);
     var style = params.get("style"), sel = $("#b-style", form);
     if (style && sel && $$("option", sel).some(function (o) { return o.value === style; })) sel.value = style;
-    var look = params.get("look"), det = $("#b-details", form);
-    if (look && det && !det.value) det.value = "Inspired by this photo on your website: " + look.slice(0, 160);
+    /* "Book this look": show the chosen photo and carry it into the request */
+    var look = params.get("look"), img = params.get("img"), lookBox = $("[data-look]", form), lookIn = $("[data-look-input]", form);
+    if (look && lookBox) {
+      $("[data-look-text]", lookBox).textContent = (style ? style + " · " : "") + look.slice(0, 160);
+      var li = $("[data-look-img]", lookBox);
+      if (img && /^images\/[\w\/.-]+$/.test(img)) { li.src = img; li.alt = look.slice(0, 120); } else { li.remove(); lookBox.style.gridTemplateColumns = "minmax(0,1fr) auto"; }
+      lookBox.hidden = false;
+      lookIn.value = (style ? style + ": " : "") + look.slice(0, 200);
+      $("[data-look-clear]", lookBox).addEventListener("click", function () { lookBox.hidden = true; lookIn.value = ""; });
+    }
     var d = $("#b-date", form);
     if (d) { var t = new Date(); t.setMinutes(t.getMinutes() - t.getTimezoneOffset()); d.min = t.toISOString().slice(0, 10); }
     var msg = $("[data-msg]", form), btn = $("[data-submit]", form);
     var setMsg = function (text, kind) { msg.textContent = text; msg.className = "form-msg" + (kind ? " " + kind : ""); };
     var MAX = 8 * 1024 * 1024;
-    var MSG = { name: "Please enter your name.", phone: "Please enter a phone number we can call or text.", style: "Please choose a hairstyle.", email: "Please check your email address, or leave it empty.",
-      date: "Please choose a date from today onwards.", time: "Please choose a time of day." };
+    var MSG = { name: "Please enter your name.", phone: "Please enter a phone number Amy can call or text.", style: "Please choose a hairstyle.",
+      email: "Please check your email address, or leave it empty.", date: "Please choose a date from today onwards.", time: "Please choose a time of day." };
     var setErr = function (f, text) {
       f.setAttribute("aria-invalid", text ? "true" : "false");
       var p = document.getElementById(f.id + "-err"); if (p) p.textContent = text || "";
     };
     $$("input, select, textarea", form).forEach(function (f) {
-      f.addEventListener("input", function () { if (f.getAttribute("aria-invalid") === "true" && f.checkValidity()) setErr(f, ""); });
-      f.addEventListener("change", function () { if (f.getAttribute("aria-invalid") === "true" && f.checkValidity()) setErr(f, ""); });
+      var clear = function () { if (f.getAttribute("aria-invalid") === "true" && f.checkValidity()) setErr(f, ""); };
+      f.addEventListener("input", clear); f.addEventListener("change", clear);
     });
     form.addEventListener("submit", function (ev) {
-      ev.preventDefault();
-      setMsg("");
+      ev.preventDefault(); setMsg("");
       var bad = null;
       $$("input, select, textarea", form).forEach(function (f) {
-        if (f.type === "hidden" || f.name === "company" || f.type === "file") return;
+        if (f.type === "hidden" || f.name === "company" || f.type === "file" || !f.id) return;
         var ok = f.checkValidity();
         setErr(f, ok ? "" : (MSG[f.name] || "Please check this field."));
         if (!ok && !bad) bad = f;
@@ -280,93 +244,18 @@
       var file = $("#b-photo", form);
       if (file && file.files[0]) {
         var fl = file.files[0], okType = /^image\//.test(fl.type || "image/") || /\.(heic|heif)$/i.test(fl.name);
-        if (fl.size > MAX || !okType) { setErr(file, fl.size > MAX ? "This photo is larger than 8 MB. Please choose a smaller one." : "Please choose an image file."); if (!bad) bad = file; }
+        if (fl.size > MAX || !okType) { setErr(file, fl.size > MAX ? "This photo is larger than 8 MB. Please choose a smaller one." : "Please choose an image file."); if (!bad) { bad = file; $(".more-f", form).open = true; } }
         else setErr(file, "");
       }
       if (bad) { setMsg("Please check the highlighted fields.", "err"); bad.focus(); return; }
       btn.disabled = true;
-      var label = btn.querySelector("span"), old = label.textContent;
-      label.textContent = "Sending…";
+      var label = btn.querySelector("span"), old = label.textContent; label.textContent = "Sending…";
       fetch("/", { method: "POST", body: new FormData(form) })
-        .then(function (res) {
-          if (!res.ok) throw new Error("HTTP " + res.status);
-          window.location.href = "booking-received.html";
-        })
+        .then(function (res) { if (!res.ok) throw new Error("HTTP " + res.status); window.location.href = "booking-received.html"; })
         .catch(function () {
-          setMsg("Sorry, your request could not be sent. Please try again, or call us at " + form.getAttribute("data-phone") + ".", "err");
+          setMsg("Sorry, your request could not be sent. Please try again in a moment, or call the salon at " + form.getAttribute("data-phone") + ".", "err");
           btn.disabled = false; label.textContent = old;
         });
     });
-  }
-  /* ---------- Meet Amy: silent salon footage.
-     Files load only as the section approaches; it plays while on screen and pauses when scrolled away.
-     Reduced motion or Data Saver: the poster stays until the visitor taps play. If playback fails, the poster remains. */
-  var film = $("[data-film]");
-  if (film) {
-    var fv = $("[data-film-video]", film), fbtn = $("[data-film-toggle]", film), flabel = $("[data-film-label]", film);
-    var rm = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
-    var saveData = !!(navigator.connection && navigator.connection.saveData);
-    var autoOK = function () { return !(rm && rm.matches) && !saveData; };
-    var loaded = false, failed = false, userPaused = false, onScreen = false;
-    var setState = function (st) {
-      film.setAttribute("data-state", st);
-      if (flabel) flabel.textContent = st === "playing" ? "Pause video" : "Play video";
-    };
-    var fail = function () {
-      if (failed) return;
-      failed = true; setState("failed"); fbtn.hidden = true;
-      try { fv.pause(); fv.removeAttribute("src"); } catch (err) {}
-    };
-    var loadFilm = function () {
-      if (loaded || failed) return;
-      loaded = true;
-      var srcs = $$("source", fv);
-      srcs.forEach(function (s) { s.src = s.getAttribute("data-src"); });
-      if (srcs.length) srcs[srcs.length - 1].addEventListener("error", fail);
-      fv.addEventListener("error", fail);
-      fv.load();
-    };
-    var playFilm = function () {
-      if (failed) return;
-      loadFilm();
-      var p = fv.play();
-      if (p && p.catch) p.catch(function (err) { if (err && err.name === "NotSupportedError") fail(); else setState("paused"); });
-    };
-    fv.addEventListener("playing", function () { setState("playing"); });
-    fv.addEventListener("pause", function () { if (!failed) setState("paused"); });
-    fbtn.hidden = false;
-    fbtn.addEventListener("click", function () {
-      if (fv.paused) { userPaused = false; playFilm(); } else { userPaused = true; fv.pause(); }
-    });
-    if (rm && rm.addEventListener) rm.addEventListener("change", function () { if (rm.matches && !fv.paused) fv.pause(); });
-    if ("IntersectionObserver" in window) {
-      /* wait for the page itself to finish loading so the footage never competes with the hero */
-      var watchNear = function () {
-        new IntersectionObserver(function (es) {
-          if (es[0].isIntersecting && autoOK()) loadFilm();
-        }, { rootMargin: "400px 0px" }).observe(film);
-      };
-      if (document.readyState === "complete") watchNear(); else window.addEventListener("load", watchNear);
-      new IntersectionObserver(function (es) {
-        onScreen = es[0].isIntersecting && es[0].intersectionRatio >= 0.35;
-        if (onScreen) { if (autoOK() && !userPaused && fv.paused && !otherPlaying(fv)) playFilm(); }
-        else if (!fv.paused) fv.pause();
-      }, { threshold: [0, 0.35, 0.6] }).observe(film);
-    } else if (autoOK()) {
-      playFilm();
-    }
-  }
-
-  /* ---------- gentle entrance for sections marked data-reveal */
-  var reveals = $$("[data-reveal]");
-  if (reveals.length) {
-    if ("IntersectionObserver" in window) {
-      var rio = new IntersectionObserver(function (es) {
-        es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("is-in"); rio.unobserve(en.target); } });
-      }, { threshold: 0.18 });
-      reveals.forEach(function (el) { rio.observe(el); });
-    } else {
-      reveals.forEach(function (el) { el.classList.add("is-in"); });
-    }
   }
 })();

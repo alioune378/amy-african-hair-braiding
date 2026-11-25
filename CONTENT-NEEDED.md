@@ -1,3 +1,21 @@
+# Before production launch (Nov 2026 redesign)
+
+**Launch blockers**
+1. **Booking delivery not yet proven.** The site posts requests to Netlify Forms (form "booking"). Netlify showed 0 submissions. In Netlify → Forms → booking → Notifications, add Amy's email. Then send one real request from a phone and confirm it arrives. The new fields (`braid_size`, `length`, `selected_look`) register on the next deploy. No SMS or customer email confirmation is configured; customers see the on-screen confirmation page only.
+2. **Phone numbers.** The site shows (314) 249-1615 everywhere. (314) 429-2823 appears only as a small "Also" line on the home Visit section and the Contact page. The storefront sign shows (314) 395-7624. Confirm with Amy which secondary number is current.
+3. **Domain.** After amyafricanbraids.com is purchased and connected, set `"site_url": "https://amyafricanbraids.com"` and `"noindex": false` in `data/site.json`. The preview is currently kept out of search engines.
+
+**Content to confirm**
+- Opening hours (the site says "Please call to confirm today's hours")
+- Year established (the wall sign shows EST 2019 in some photos and 2010 in others; hidden until confirmed)
+- A proper portrait of Amy (Meet Amy currently uses a still from her salon video)
+- Genuine Google reviews to quote (the section stays hidden until added)
+- Boutique items and photos (the section stays compact until added)
+- Instagram Reel cover images (`poster` in `data/reels.json`). Reels appear in the video gallery only once they have a real cover. TikTok covers are fetched automatically when Netlify builds.
+- Prices and durations, if Amy wants them shown
+
+---
+
 # Content still needed from Amy
 
 The site shows only confirmed information. Anything missing is hidden, never filled with placeholder text.
